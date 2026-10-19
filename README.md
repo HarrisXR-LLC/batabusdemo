@@ -6,7 +6,7 @@ A phone-first web app that shows how riding a BATA bus could feel like getting a
 
 ## Try it
 
-**[Open the demo](https://YOUR-GITHUB-USER.github.io/batabusdemoapp/)**  <!-- set to the GitHub Pages URL once Pages is on -->
+**[Open the demo](https://harrisxr-llc.github.io/batabusdemo/)**
 
 It's made for a phone, held upright. On a computer it shows inside a phone frame, with a QR code to open it on your phone. The whole demo takes about four minutes.
 
