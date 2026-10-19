@@ -1,0 +1,17 @@
+# Line endings: LF in the repo and on every checkout, so the files are the same on Windows, macOS
+# and in GitHub's "Download ZIP". Windows batch files need CRLF (cmd can miss labels with LF).
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# never touched by line-ending conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.zip binary
+*.tgz binary

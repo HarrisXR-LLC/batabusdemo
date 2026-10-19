@@ -1,0 +1,65 @@
+/* bata go design tokens (plan 1·1 §7).
+   BATA hues sampled from bata.net on 2026-10-18: banner sky blue #1CB0E8, logo-dot lime #94D800,
+   button blue #0480B0, header charcoal #2C2C30. "Strong" variants are darkened along the same hue
+   until text passes WCAG AA (contrast ratios noted). */
+:root {
+  /* brand */
+  --bata-blue: #1CB0E8;          /* accents, your route, live status; never text (2.5:1 on white) */
+  --bata-blue-strong: #0479A6;   /* primary buttons, links, focus ring: white on it 4.9:1 */
+  --bata-lime: #94D800;          /* "on time" dots, success fills, the wordmark dot; never text */
+  --bata-green-strong: #507500;  /* green text and icons: 5.4:1 on white, 4.8:1 on --bata-green-pale */
+  --bata-green-pale: #EAF5DD;
+  --bata-charcoal: #2C2C30;
+
+  /* neutrals */
+  --white: #FFFFFF;
+  --g50: #F6F8FA;
+  --g100: #EEF1F4;
+  --g200: #E2E7EC;
+  --g400: #A9B3BD;               /* decorative hairlines only */
+  --g500: #82919F;               /* borders that identify a control: 3.2:1 on white */
+  --g600: #5B6673;               /* secondary text: 5.8:1 on white, 5.5:1 on --g50 */
+  --g900: #111820;               /* ink: 17.9:1 on white */
+
+  /* status */
+  --amber-ink: #8A5300;          /* 5.8:1 on --amber-bg */
+  --amber-bg: #FFF4DE;
+
+  /* route chips (GTFS colors; text chosen by contrast) */
+  --route-07: #FDB812;      --route-07-ink: #111820;       /* 10.3:1 */
+  --route-bayline: #33A1FF; --route-bayline-ink: #0B1F2E;  /* 6.2:1 */
+  --route-14: #6F6E6E;      --route-14-ink: #FFFFFF;
+
+  /* type */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fs-large-title: 1.7rem;   /* ~29px */
+  --fs-title: 1.24rem;        /* ~21px */
+  --fs-body: 1rem;            /* 17px, follows the iPhone text size */
+  --fs-callout: 0.9rem;       /* ~15px */
+  --fs-footnote: 0.765rem;    /* 13px, the smallest allowed (except the footer) */
+
+  /* shape, space, depth */
+  --gutter: 16px;
+  --r-sheet: 22px;
+  --r-card: 16px;
+  --r-btn: 14px;
+  --r-pill: 999px;
+  --tap: 48px;
+  --shadow-soft: 0 1px 2px rgba(17, 24, 32, .06), 0 8px 24px rgba(17, 24, 32, .10);
+  --shadow-sheet: 0 -1px 2px rgba(17, 24, 32, .06), 0 -10px 28px rgba(17, 24, 32, .12);
+
+  /* glass (minimal) */
+  --glass-bg: rgba(255, 255, 255, .78);
+  --glass-edge: rgba(255, 255, 255, .62);
+  --glass-filter: blur(14px) saturate(140%);
+
+  /* motion */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --t-fast: 150ms;
+  --t-sheet: 300ms;
+
+  /* layout */
+  --footer-h: 22px;
+  --screen-w: 396px;   /* framed mode renders a fixed 396 x 880 (9:20) screen, then scales the device */
+  --screen-h: 880px;
+}

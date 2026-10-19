@@ -1,0 +1,38 @@
+# HarrisXR's dev tools stay local and out of the public repo (decision 2026-10-19):
+# the local server and Launch.bat, the data, sprite and icon generators, the vendor collector,
+# the screenshot tool, and their caches and screenshots.
+tools/
+Launch.bat
+
+# downloads and archives, wherever they land
+*.zip
+*.tgz
+
+# Python and Node leftovers
+__pycache__/
+*.pyc
+node_modules/
+npm-debug.log*
+
+# editors and assistants
+.vscode/
+.idea/
+.vs/
+*.code-workspace
+.claude/
+*.swp
+*~
+
+# local settings, secrets and logs
+.env
+.env.*
+*.log
+*.tmp
+
+# OS clutter
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+~$*

@@ -1,0 +1,153 @@
+/* Rider screens (plan 2·1 §4–5): welcome, places, review, sign-in and pay, booked, Where's my ride, the pass,
+   on board and arrived. Built from the UI kit (ui.css); mockups M1–M4 are the references. */
+
+/* ---------- welcome ---------- */
+.welcome { padding-top: 4px; }
+.welcome-mark { display: flex; align-items: center; margin: 0 0 10px; font-size: 2rem; font-weight: 800; letter-spacing: -.6px; line-height: 1; }
+.welcome-mark .dot { width: 10px; height: 10px; margin: 6px 6px 0; border-radius: 50%; background: var(--bata-lime); }
+.welcome-mark .go { color: var(--bata-blue-strong); font-weight: 600; }
+.sheet-body .welcome h1 { font-size: var(--fs-large-title); font-weight: 700; letter-spacing: -.3px; margin: 0 0 4px; }
+
+/* ---------- home: the search pill as a button ---------- */
+.search-btn { width: 100%; border: 0; cursor: pointer; text-align: left; font-size: 1.1rem; font-weight: 600; }
+.search-btn span { color: var(--g600); font-weight: 500; }
+.chip.static { cursor: default; }
+.chip.static::after { content: none; }
+.place-list { margin-top: 4px; }
+.row[aria-disabled="true"] { cursor: default; }
+.row[aria-disabled="true"] .row-ic { color: var(--g600); }
+.empty-hint { margin: 12px 0 0; }
+
+/* ---------- options and review ---------- */
+.dest-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.dest-head .row-ic { width: 40px; height: 40px; }
+.sheet-body .dest-head h1 { margin: 0; }
+.dest-head .muted { margin-top: 1px; }
+.opt-extra { display: inline-flex; align-items: center; gap: 6px; }
+.review-list { list-style: none; margin: 4px 0 0; padding: 0; }
+.review-list li { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 6px 0; border-bottom: 1px solid var(--g100); }
+.review-list li:last-child { border-bottom: 0; }
+.review-list .grow { flex: 1; min-width: 0; }
+.review-list .t { display: block; font-weight: 600; }
+.review-list .s { display: block; margin-top: 1px; color: var(--g600); font-size: .82rem; }
+.fine { margin: 8px 0 0; text-align: center; color: var(--g600); font-size: var(--fs-footnote); }
+
+/* ---------- sign-in and pay ---------- */
+.title-row { display: flex; align-items: center; gap: 12px; }
+.title-row .grow { flex: 1; min-width: 0; }
+.title-row .amount { font-size: var(--fs-title); font-weight: 700; }
+.label-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fields { margin-top: 2px; }
+.brand-tiles { display: flex; justify-content: space-between; gap: 6px; }
+.brand-tile {
+  flex: 1 1 0; max-width: 56px; height: 52px; display: grid; place-items: center; padding: 0 6px; cursor: pointer;
+  border: 1px solid var(--g500); border-radius: var(--r-btn); background: var(--white);
+}
+.brand-tile img { width: 28px; height: 28px; }
+.brand-tile.wide img { width: 100%; max-width: 40px; height: 28px; }
+.brand-tile:active { background: var(--g50); }
+.pay-sheet { text-align: center; }
+.pay-body { display: grid; justify-items: center; gap: 10px; }
+.pay-body h2 { margin: 0; font-size: var(--fs-title); }
+.pay-body p { margin: 0; }
+.pay-body .stack { width: 100%; display: grid; gap: 6px; margin-top: 6px; }
+.pay-logo { width: 64px; height: 40px; object-fit: contain; }
+.spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--g200); border-top-color: var(--bata-blue-strong); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pay-check, .done-check {
+  width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--bata-green-strong); color: var(--white);
+}
+.pay-check svg.i, .done-check svg.i { stroke-width: 2.5; }
+
+/* ---------- booked and arrived ---------- */
+.done-head { display: flex; align-items: center; gap: 12px; }
+.sheet-body .done-head h1 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+.sheet-body .booked-note { margin: 8px 0 0; }
+.code-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: 14px; padding: 12px 14px; border-radius: var(--r-card); background: var(--g50); }
+.code-row .code { font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; }
+.big-time { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 10px 0 2px; }
+.big-time strong { font-size: 2.2rem; font-weight: 700; letter-spacing: -.8px; line-height: 1.1; }
+.big-time span { color: var(--bata-green-strong); font-weight: 600; }
+
+/* ---------- Where's my ride ---------- */
+.ride-card .eta { margin: 12px 0 2px; }
+.ride-wait { margin: 2px 0 0; }
+
+/* ---------- the pass (M4) ---------- */
+.pass { margin-top: 10px; padding: 16px; border: 1px solid var(--g200); border-radius: 20px; box-shadow: 0 8px 24px rgba(17, 24, 32, .08); }
+.pass-top { display: flex; align-items: center; gap: 8px; }
+.pass-name { flex: 1; font-size: var(--fs-callout); font-weight: 600; }
+.sheet-body .pass-trip { margin: 12px 0 2px; color: var(--g900); font-size: 1.05rem; font-weight: 600; }
+.sheet-body .pass-room { margin: 8px 0 0; }
+.pass-qr { width: 176px; height: 176px; margin: 14px auto 8px; }
+.pass-qr svg { display: block; width: 100%; height: 100%; }
+.sheet-body .pass-code { margin: 0; text-align: center; color: var(--g900); font-size: 1.4rem; font-weight: 700; letter-spacing: 3px; }
+.sheet-body .pass-hint { text-align: center; }
+.wallet-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.wallet-row .btn { flex: 1 1 150px; padding: 0 6px; font-size: 14.5px; }
+
+/* ---------- on board ---------- */
+.stops-left { list-style: none; margin: 8px 0 0; padding: 0; }
+.stop-row { position: relative; display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.stop-row:not(:last-child)::after { content: ""; position: absolute; left: 6px; top: 30px; bottom: -14px; width: 2px; background: var(--g200); }
+.stop-dot { width: 14px; height: 14px; flex: none; border-radius: 50%; border: 3px solid var(--bata-blue-strong); background: var(--white); }
+.stop-row.yours .stop-dot { background: var(--bata-blue-strong); }
+.stop-name { flex: 1; font-weight: 500; }
+.stop-row.yours .stop-name { font-weight: 700; }
+.stop-time { color: var(--g600); font-size: var(--fs-callout); }
+.stop-row.passed .stop-name, .stop-row.passed .stop-time { color: var(--g600); text-decoration: line-through; }
+
+/* ---------- trip 3: airport header, When, Arrive by, the end ---------- */
+.dest-head .row-ic svg.filled { fill: currentColor; stroke: none; }
+.here-line { display: flex; align-items: center; gap: 5px; }
+.sheet-body .when-line, .sheet-body .when-picked { margin: 4px 0 0; }
+.sheet-body .when-picked { color: var(--g900); font-weight: 600; }
+.other-time { margin-top: 8px; }
+.end-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+.end-list li { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+.done-check.small { width: 28px; height: 28px; }
+
+/* ---------- Preview my Ride (M8) ---------- */
+.pv { padding-bottom: 80px; }                       /* room under the scrubber for a tip's buttons */
+.pv-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sheet-body .pv-head h1 { margin: 0; color: var(--g600); font-size: var(--fs-callout); font-weight: 600; }
+.pv-head .btn.text { width: auto; padding: 0 4px; font-size: 1rem; }
+.pv .seg { margin: 6px 0 2px; }
+.pv-step { display: flex; align-items: center; gap: 14px; min-height: 104px; margin-top: 6px; }
+.pv-text { flex: 1; min-width: 0; }
+.sheet-body .pv-time { margin: 0; color: var(--g900); font-size: 2.1rem; font-weight: 700; letter-spacing: -.8px; line-height: 1.1; }
+.sheet-body .pv-title { margin: 2px 0 0; color: var(--g900); font-size: var(--fs-body); font-weight: 600; }
+.sheet-body .pv-where { margin-top: 2px; }
+.pv-side { width: 96px; flex: none; margin: 0; text-align: center; }
+.pv-side img { display: block; width: 100%; height: auto; }
+.pv-side figcaption { margin-top: 4px; font-size: var(--fs-footnote); }
+.scrub { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.scrub .round[disabled] { opacity: .45; cursor: default; }
+.track { position: relative; flex: 1; height: 48px; touch-action: none; cursor: pointer; }
+.track .bar { position: absolute; left: 12px; right: 12px; top: 22px; height: 4px; border-radius: 2px; background: var(--g200); }
+.track .dotp {  /* the target fills the space between dots (up to 48 x 48); the visible dot is 14px */
+  position: absolute; top: 0; width: var(--dot-w, 44px); height: 48px; margin-left: calc(var(--dot-w, 44px) / -2); padding: 0; border: 0;
+  background: transparent; cursor: pointer;
+}
+.track .dotp::before {
+  content: ""; position: absolute; left: 50%; top: 17px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
+  background: var(--white); border: 3px solid var(--g500); box-sizing: border-box;
+}
+.track .dotp.on::before { border-color: var(--bata-blue-strong); background: var(--bata-blue); }
+.track .tlab { position: absolute; top: 50px; transform: translateX(-50%); color: var(--g600); font-size: var(--fs-footnote); font-weight: 500; white-space: nowrap; }
+.track .thumb {
+  position: absolute; top: 2px; width: 44px; height: 44px; margin-left: -22px; border-radius: 50%;
+  background: var(--bata-blue); border: 4px solid var(--white); box-shadow: 0 2px 8px rgba(17, 24, 32, .3); cursor: grab;
+  transition: left var(--t-fast) var(--ease);
+}
+.track .thumb::after { content: ""; position: absolute; inset: -6px; }   /* a 56px target */
+.track .thumb:focus-visible { outline: 3px solid var(--bata-blue-strong); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .track .thumb { transition: none; }
+  .spinner { animation: none; border-top-color: var(--bata-blue-strong); border-right-color: var(--bata-blue-strong); }
+}
+@media (prefers-contrast: more) {
+  .pass, .sheet-body .booked-note { margin: 8px 0 0; }
+.code-row { border: 1px solid var(--g500); }
+}

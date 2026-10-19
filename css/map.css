@@ -1,0 +1,123 @@
+/* Map markers, vehicles, walker, pins, labels and the fallback map (plan 1·4).
+   Rule from the mockups: never style a MapLibre marker's root element; style an inner wrapper.
+   Only transform and opacity animate, so the effects stay smooth on phones. */
+
+/* ---------- vehicles (§6) ---------- */
+.veh { position: relative; width: 0; height: 0; }
+.veh-shadow { position: absolute; border-radius: 50%; background: rgba(17, 24, 32, .18); filter: blur(2px); }
+.veh.dim .veh-shadow { opacity: .5; }
+.veh-bob, .veh-flip { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
+.veh-flip.mirrored { transform: scaleX(-1); }            /* mirrored frames flip about the ground center */
+.veh-sprite { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; }
+.veh.dim .veh-sprite { opacity: .6; filter: saturate(.55) brightness(1.04); }
+.veh.yours .veh-sprite { filter: drop-shadow(0 0 1px rgba(17, 24, 32, .55)); }   /* a soft edge: a white van stays visible on a white road */
+
+/* Yours: bobs while driving (Max's road-motion, peaks raised for the 1.4× size), shudders while waiting. */
+.veh.yours.driving .veh-bob { animation: road-motion 2.8s ease-in-out infinite; }
+.veh.yours.idle .veh-bob { animation: idle-motion 7.4s linear infinite; }
+@keyframes road-motion {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  14% { transform: translateY(-1px) rotate(-.4deg); }
+  21% { transform: translateY(.3px) rotate(.25deg); }
+  45% { transform: translateY(0); }
+  55% { transform: translateY(-1.5px) rotate(.4deg); }
+  65% { transform: translateY(.4px); }
+  80% { transform: translateY(-.5px); }
+}
+@keyframes idle-motion {
+  0%, 70%, 80%, 100% { transform: translate(0, 0) rotate(0); }
+  72%, 76% { transform: translateX(.3px) rotate(.15deg); }
+  74%, 78% { transform: translateX(-.3px) rotate(-.15deg); }
+}
+
+/* Exhaust (driving, 3.6 s) and idle smoke (waiting, 4.8 s): a box at the tail point, turned so its +y points
+   away from the vehicle; each puff drifts down it and grows. Ported from Max's GPS. */
+.exhaust { position: absolute; transform: translate(-50%, -50%) rotate(var(--turn, 0deg)); pointer-events: none; }
+.exhaust .puff { position: absolute; inset: 0; opacity: 0; animation: exhaust-drive var(--puff-duration, 3.6s) linear infinite; }
+.exhaust.park .puff { animation-name: exhaust-park; }
+.exhaust .puff svg {
+  display: block; width: 100%; height: 100%; overflow: visible; transform: rotate(calc(-1 * var(--turn, 0deg)));
+  fill: #F0F2F4; stroke: #526478; stroke-width: 5; stroke-linejoin: round;
+}
+@keyframes exhaust-drive {
+  0% { opacity: 0; transform: translateY(0) scale(.4); }
+  15% { opacity: .85; }
+  65% { opacity: .6; }
+  100% { opacity: 0; transform: translateY(112.5%) scale(1.35); }
+}
+@keyframes exhaust-park {
+  0% { opacity: 0; transform: translateY(0) scale(.4); }
+  15% { opacity: .85; }
+  65% { opacity: .6; }
+  100% { opacity: 0; transform: translateY(58.33%) scale(1.35); }
+}
+
+/* ---------- the walker and "you are here" (§7) ---------- */
+.walker { position: relative; width: 0; height: 0; }
+.walker-cone { position: absolute; left: -70px; top: -70px; width: 140px; height: 140px; overflow: visible; }
+.walker-ring {
+  position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(28, 176, 232, .18); border: 2px solid rgba(28, 176, 232, .55); animation: here-pulse 2.4s ease-out infinite;
+}
+.walker.moving .walker-ring { display: none; }
+@keyframes here-pulse { 0% { transform: scale(.85); opacity: 1; } 70% { transform: scale(1.25); opacity: .35; } 100% { transform: scale(.85); opacity: 1; } }
+.walker-fig { position: absolute; left: -13px; top: -31px; width: 26px; height: 32px; overflow: visible; }
+.walker-fig.west { transform: scaleX(-1); }
+
+/* ---------- story stops and pins (§4.3) ---------- */
+.map-stop, .map-pin { position: relative; width: 0; height: 0; }
+.map-stop-dot {
+  position: absolute; left: -8px; top: -8px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--white); border: 3.5px solid var(--bata-blue-strong); box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+.map-stop-label {
+  position: absolute; left: 14px; top: -13px; display: flex; align-items: center; gap: 4px; padding: 4px 9px;
+  border-radius: 8px; color: var(--g900); font-size: 12.5px; font-weight: 600; white-space: nowrap;
+}
+.map-stop-label.flip { left: auto; right: 14px; }        /* near the right edge it sits on the dot's left */
+.map-stop-label svg.i { width: 14px; height: 14px; color: var(--bata-blue-strong); }
+.map-pin-dot {
+  position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bata-blue-strong); border: 2.5px solid var(--white); box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+.map-pin-chip {
+  position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 6px; padding: 6px 11px 6px 8px; border-radius: var(--r-pill);
+  color: var(--g900); font-size: 13.5px; font-weight: 600; white-space: nowrap; transform: translate(-50%, calc(-100% - 12px));
+}
+.map-pin[data-anchor="left"] .map-pin-chip { transform: translate(calc(-100% + 22px), calc(-100% - 12px)); }
+.map-pin[data-anchor="right"] .map-pin-chip { transform: translate(-22px, calc(-100% - 12px)); }
+.map-pin-chip svg.i { color: var(--bata-blue-strong); }
+.map-pin-chip svg.filled { fill: currentColor; stroke: none; }
+
+/* ---------- credits (compact, always visible) and the "Simplified map" chip ---------- */
+.map-credits {
+  position: absolute; right: 12px; bottom: calc(var(--map-bottom, 300px) + 10px); z-index: 15;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px; max-width: calc(100% - 24px);
+}
+.map-credits-btn {
+  position: relative; width: 26px; height: 26px; padding: 0; border-radius: 50%; cursor: pointer;
+  color: var(--g600); font: 700 13px Georgia, "Times New Roman", serif;
+}
+.map-credits-btn::after { content: ""; position: absolute; inset: -9px; }   /* 44px target */
+.map-credits-text { order: -1; margin: 0; padding: 6px 10px; border-radius: 10px; color: var(--g600); font-size: 12px; line-height: 1.4; text-align: right; }
+.map-credits-text a { color: var(--g900); }
+.map-chip {
+  position: absolute; left: 12px; bottom: calc(var(--map-bottom, 300px) + 10px); z-index: 15; margin: 0;
+  padding: 5px 11px; border-radius: var(--r-pill); color: var(--g600); font-size: 12.5px; font-weight: 600;
+}
+
+/* ---------- the simplified map (§8) ---------- */
+.fallback-map { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.fallback-markers { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.fallback-markers > div { position: absolute; left: 0; top: 0; }   /* our own backend places these roots */
+#map-layer .maplibregl-canvas { outline: none; }
+
+/* ---------- preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .veh .veh-bob, .walker-ring { animation: none !important; }
+  .exhaust { display: none; }
+}
+@media (prefers-contrast: more) {
+  .veh.dim .veh-sprite { opacity: .75; }
+  .map-stop-label, .map-pin-chip, .map-credits-btn, .map-chip { background: var(--white); box-shadow: 0 0 0 1px var(--g500); }
+}

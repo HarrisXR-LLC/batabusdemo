@@ -1,0 +1,157 @@
+/* bata go app shell: page, frame, top bar, sheet, footer (plan 1·1 §6, §7). */
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; font-size: 17px; -webkit-text-size-adjust: 100%; }
+@supports (font: -apple-system-body) { html { font: -apple-system-body; } }  /* follow the iPhone text size */
+body {
+  margin: 0; min-height: 100vh; font-family: var(--font); color: var(--g900); background: var(--g100);
+  -webkit-font-smoothing: antialiased; overscroll-behavior: none;
+}
+button { font: inherit; color: inherit; touch-action: manipulation; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+svg.i.s { width: 18px; height: 18px; }
+.tab { font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--bata-blue-strong); outline-offset: 2px; }
+
+/* ---------- stage, device, screen ---------- */
+#stage { min-height: 100vh; }
+#screen { position: relative; overflow: hidden; background: var(--g50); isolation: isolate; }
+
+/* phone: the app fills the viewport */
+body[data-mode="phone"] { background: var(--g50); }
+body[data-mode="phone"] #screen { width: 100vw; height: 100vh; height: 100dvh; }
+body[data-mode="phone"] #device { display: contents; }
+body[data-mode="phone"] #frame-caption, body[data-mode="phone"] .status { display: none; }
+
+/* framed (desktop, most tablets): a 396 x 880 screen in a generic phone bezel, scaled to fit */
+body[data-mode="framed"] { overflow: hidden; }
+body[data-mode="framed"] #stage { position: relative; height: 100vh; overflow: hidden; }
+/* Centered with absolute positioning: the device is scaled visually, but its layout box stays 420 x 904,
+   which can be taller than the window (grid centering would then fall back to the top). */
+body[data-mode="framed"] #device {
+  position: absolute; left: 50%; top: calc(50% - 14px); width: calc(var(--screen-w) + 24px); height: calc(var(--screen-h) + 24px); padding: 12px;
+  border-radius: 56px; background: #15191F; box-shadow: 0 0 0 2px #3A424C, 0 30px 70px rgba(17, 24, 32, .28), 0 8px 18px rgba(17, 24, 32, .18);
+  transform: translate(-50%, -50%) scale(var(--k, 1)); transform-origin: center center;
+}
+body[data-mode="framed"] #device::before {  /* a small pill camera cut-out (generic, not any one maker's) */
+  content: ""; position: absolute; top: 23px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 13px; background: #000; z-index: 90;
+}
+body[data-mode="framed"] #screen { width: var(--screen-w); height: var(--screen-h); border-radius: 44px; }
+#frame-caption > p {
+  position: fixed; left: 0; right: 0; bottom: 10px; margin: 0; text-align: center; font-size: var(--fs-footnote); color: var(--g600);
+}
+#frame-caption strong { color: var(--g900); font-weight: 600; }
+#qr-download { margin-left: 14px; color: #036A92; font-weight: 600; text-underline-offset: 2px; }   /* 5.3:1 on the page's gray */
+#qr-download:not([hidden])::before { content: "·"; margin-right: 14px; color: var(--g600); display: inline-block; text-decoration: none; }
+/* beside the phone when the window has room (frame.js sets data-side) */
+#qr-card {
+  position: fixed; top: 50%; left: calc(50% + (var(--screen-w) / 2 + 12px) * var(--k, 1) + 56px); transform: translateY(-50%);
+  width: 196px; padding: 18px 18px 16px; border-radius: 22px; background: var(--white); box-shadow: var(--shadow-soft);
+  text-align: center; font-size: var(--fs-footnote); color: var(--g600);
+}
+body:not([data-side="on"]) #qr-card { display: none; }
+#qr-card p { margin: 0; }
+#qr-card .qr-title { color: var(--g900); font-weight: 600; font-size: var(--fs-callout); margin-bottom: 12px; }
+#qr-card .qr { width: 148px; height: 148px; margin: 0 auto 10px; }
+#qr-card .qr svg { display: block; width: 100%; height: 100%; }
+
+/* ---------- map layer (the map itself arrives in 1·4) ---------- */
+#map-layer { position: absolute; inset: 0; z-index: 0; background: #F3F5F7; }   /* own stacking context: markers stay under the sheet */
+
+/* ---------- top fade, status bar (framed only), glass top bar ---------- */
+#topfade {
+  position: absolute; left: 0; right: 0; top: 0; height: 118px; z-index: 18; pointer-events: none;
+  background: linear-gradient(rgba(243, 245, 247, .96), rgba(243, 245, 247, .75) 45%, rgba(243, 245, 247, 0));
+}
+.status {
+  position: absolute; top: 0; left: 0; right: 0; height: 50px; z-index: 20; display: flex; align-items: center;
+  justify-content: space-between; padding: 6px 30px 0 34px; font-weight: 600; font-size: 16px;
+}
+.status .icons { display: flex; gap: 6px; align-items: center; }
+.glass {
+  background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  border: 1px solid var(--glass-edge); box-shadow: var(--shadow-soft);
+}
+#topbar {
+  position: absolute; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 10px); height: 52px; z-index: 20;
+  display: flex; align-items: center; gap: 8px; padding: 0 7px 0 18px; border-radius: var(--r-pill);
+}
+body[data-mode="framed"] #topbar { top: 54px; }
+.wordmark { flex: none; display: flex; align-items: center; font-weight: 800; font-size: 21px; letter-spacing: -.4px; margin: 0; line-height: 1; }
+.wordmark .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--bata-lime); margin: 4px 4px 0; }
+.wordmark .go { color: var(--bata-blue-strong); font-weight: 600; }
+.clock {  /* like iOS bars, the top bar stops growing past 16px text; it shrinks before ⓘ ever leaves the screen */
+  margin-left: auto; min-width: 0; padding: 8px 12px; border-radius: var(--r-pill); background: rgba(238, 241, 244, .85);
+  font-size: min(var(--fs-callout), 16px); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.clock.tight .ck-wd { display: none; }   /* story.js drops the weekday when the chip doesn't fit: "11:06 AM · Jul 4" */
+.clock.wrap { white-space: normal; text-align: center; line-height: 1.15; padding-block: 4px; }   /* and wraps if it still doesn't */
+.iconbtn {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: rgba(238, 241, 244, .85); cursor: pointer; position: relative;
+}
+.iconbtn::after { content: ""; position: absolute; inset: -4px; }  /* 48px touch target */
+
+/* ---------- bottom sheet (detents: peek / half / full) ---------- */
+#sheet {
+  position: absolute; left: 0; right: 0; bottom: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px)); z-index: 10;
+  height: var(--sheet-h, 30%); display: flex; flex-direction: column;
+  max-height: calc(100% - env(safe-area-inset-top, 0px) - 70px - var(--footer-h) - env(safe-area-inset-bottom, 0px));  /* stays below the top bar */
+  background: var(--white); border-radius: var(--r-sheet) var(--r-sheet) 0 0; box-shadow: var(--shadow-sheet);
+  transition: height var(--t-sheet) var(--ease);
+}
+body[data-mode="framed"] #sheet { bottom: calc(var(--footer-h) + 30px); max-height: calc(100% - 114px - var(--footer-h) - 30px); }
+#sheet.dragging { transition: none; }
+.sheet-handle {  /* a 44px-tall, full-width touch target; the visible bar stays small */
+  flex: none; display: flex; justify-content: center; padding-top: 9px; height: 44px; width: 100%; border: 0; background: none;
+  cursor: grab; touch-action: none; border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+}
+.sheet-handle::before { content: ""; width: 38px; height: 5px; border-radius: 3px; background: #D3D9DF; }
+.sheet-body { flex: 1; overflow: auto; padding: 0 var(--gutter) 16px; overscroll-behavior: contain; }
+.sheet-body h1 { font-size: var(--fs-title); font-weight: 600; margin: 4px 0 4px; }
+.sheet-body p { margin: 0; color: var(--g600); font-size: var(--fs-callout); }
+
+/* ---------- DEMO footer (always visible, never dimmed) ---------- */
+#demo-footer {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 60; text-align: center;
+  height: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px)); background: var(--g50); border-top: 1px solid var(--g200);
+  font-size: 11.5px; font-weight: 600; letter-spacing: .7px; text-transform: uppercase; color: var(--g600);
+  line-height: var(--footer-h);
+}
+body[data-mode="framed"] #demo-footer { height: calc(var(--footer-h) + 30px); }
+.homebar { display: none; }
+body[data-mode="framed"] .homebar {
+  display: block; position: absolute; left: 50%; bottom: 8px; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: #111;
+}
+
+/* ---------- overlay layers: status pill, banner, modal (ui.css); tips (tour.css) ---------- */
+#overlay-layer, #tour-layer { position: absolute; inset: 0; pointer-events: none; }
+#overlay-layer { z-index: 40; }
+#tour-layer { z-index: 50; }
+
+/* ---------- landscape on a phone: portrait only (user decision) ---------- */
+#rotate {
+  display: none; position: fixed; inset: 0; z-index: 100; place-items: center; text-align: center;
+  background: var(--g50); color: var(--g900); padding: 24px;
+}
+#rotate svg { width: 56px; height: 56px; color: var(--bata-blue-strong); margin-bottom: 12px; }
+#rotate p { margin: 0; font-size: var(--fs-title); font-weight: 600; }
+body[data-mode="phone"][data-orient="landscape"] #rotate { display: grid; }
+body[data-mode="phone"][data-orient="landscape"] #stage { visibility: hidden; }
+
+/* ---------- user preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; animation-iteration-count: 1 !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--white); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: var(--white); }
+}
+@media (prefers-contrast: more) {
+  .glass, .clock, .iconbtn { background: var(--white); border-color: var(--g500); }
+  #sheet { box-shadow: 0 0 0 1px var(--g500); }
+  #demo-footer { border-top-color: var(--g500); }
+}

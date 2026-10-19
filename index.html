@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="A demo of a rider app for BATA by HarrisXR. Not an official BATA app.">
+  <title>bata go · Demo</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <!-- MapLibre's stylesheet is added by js/map.js just before the map starts, ahead of these -->
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/ui.css">
+  <link rel="stylesheet" href="./css/rider.css">
+  <link rel="stylesheet" href="./css/map.css">
+  <link rel="stylesheet" href="./css/tour.css">
+  <!-- Fetch the data and every module at once: imports are otherwise found one level at a time (2·4 §5) -->
+  <link rel="preload" href="./data/bata.json" as="fetch" crossorigin>
+  <link rel="modulepreload" href="./js/config.js"><link rel="modulepreload" href="./js/state.js">
+  <link rel="modulepreload" href="./js/story.js"><link rel="modulepreload" href="./js/frame.js">
+  <link rel="modulepreload" href="./js/sheet.js"><link rel="modulepreload" href="./js/ui.js">
+  <link rel="modulepreload" href="./js/steps.js"><link rel="modulepreload" href="./js/tour.js">
+  <link rel="modulepreload" href="./js/router.js"><link rel="modulepreload" href="./js/data.js">
+  <link rel="modulepreload" href="./js/engine.js"><link rel="modulepreload" href="./js/map.js">
+  <link rel="modulepreload" href="./js/vehicles.js"><link rel="modulepreload" href="./js/walker.js">
+  <link rel="modulepreload" href="./js/scene.js"><link rel="modulepreload" href="./js/qr.js">
+  <link rel="modulepreload" href="./js/ride.js"><link rel="modulepreload" href="./js/preview.js">
+  <link rel="modulepreload" href="./js/pay.js"><link rel="modulepreload" href="./js/trips/common.js">
+  <link rel="modulepreload" href="./js/trips/trip1.js"><link rel="modulepreload" href="./js/trips/trip2.js">
+  <link rel="modulepreload" href="./js/trips/trip3.js">
+  <!-- The map: open the tile server's connection now, and fetch the library early but behind everything above -->
+  <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+  <link rel="modulepreload" href="./vendor/maplibre-gl-6.12.0/maplibre-gl.mjs" fetchpriority="low">
+  <link rel="modulepreload" href="./vendor/maplibre-gl-6.12.0/maplibre-gl-shared.mjs" fetchpriority="low">
+  <script type="module" src="./js/main.js"></script>
+</head>
+<body data-mode="phone">
+  <main id="stage">
+    <div id="device">
+      <div id="screen">
+        <div id="map-layer" aria-hidden="true"></div>
+        <div id="topfade" aria-hidden="true"></div>
+        <div class="status" aria-hidden="true">
+          <span class="tab" data-clock-short>7:40</span>
+          <span class="icons">
+            <svg width="18" height="12" viewBox="0 0 18 12"><rect y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" width="3" height="12" rx="1"/></svg>
+            <svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 11.5l2.4-2.9a3.6 3.6 0 0 0-4.8 0zM3.5 6.2a7.3 7.3 0 0 1 10 0l1.5-1.8a9.6 9.6 0 0 0-13 0zM.6 2.7a11.6 11.6 0 0 1 15.8 0L17 2a12.9 12.9 0 0 0-17 0z"/></svg>
+            <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="9" rx="2"/><rect x="24.5" y="4.5" width="2" height="4" rx="1" opacity=".4"/></svg>
+          </span>
+        </div>
+        <header id="topbar" class="glass">
+          <p class="wordmark"><span aria-hidden="true">bata</span><span class="dot" aria-hidden="true"></span><span class="go" aria-hidden="true">go</span><span class="sr-only">bata go</span></p>
+          <span class="clock tab" data-clock aria-live="off">7:40 AM · Today</span>
+          <button class="iconbtn" type="button" id="about-btn" aria-label="About this demo">
+            <svg class="i s" aria-hidden="true"><use href="./assets/icons.svg#i-info"/></svg>
+          </button>
+        </header>
+        <section id="sheet" aria-label="Trip panel" data-detent="peek">
+          <button class="sheet-handle" type="button" aria-label="Resize panel"></button>
+          <div class="sheet-body"></div>
+        </section>
+        <div id="overlay-layer"></div>
+        <div id="tour-layer"></div>
+        <footer id="demo-footer">Demo – not official BATA app<span class="homebar" aria-hidden="true"></span></footer>
+      </div>
+    </div>
+    <aside id="frame-caption" aria-label="Open on your phone">
+      <p><strong>bata go</strong> · a demo by HarrisXR · best on your phone<a id="qr-download" download="bata-go-demo-qr.svg" hidden>Download QR (SVG)</a></p>
+      <div id="qr-card" hidden>
+        <p class="qr-title">Try it on your phone</p>
+        <div class="qr" role="img" aria-label="QR code"></div>
+        <p>Scan with your camera</p>
+      </div>
+    </aside>
+  </main>
+  <div id="rotate" role="status">
+    <div>
+      <svg class="i" aria-hidden="true"><use href="./assets/icons.svg#i-rotate"/></svg>
+      <p>Turn your phone upright</p>
+    </div>
+  </div>
+  <noscript><p style="padding:24px;font:17px system-ui,sans-serif">This demo needs JavaScript.</p></noscript>
+</body>
+</html>

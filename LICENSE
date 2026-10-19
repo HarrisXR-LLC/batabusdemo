@@ -1,0 +1,21 @@
+Copyright (c) 2026 HarrisXR LLC. All rights reserved.
+
+This repository holds "bata go", a concept demo by HarrisXR LLC of a rider app for BATA
+(Bay Area Transportation Authority, Traverse City, Michigan). It is not an official BATA app.
+
+You may view this source code and run the demo to evaluate it.
+
+No other rights are granted. Without written permission from HarrisXR LLC, you may not copy,
+modify, distribute, sublicense or sell this code or its original assets, in whole or in part,
+or use them in another product or service. (GitHub's Terms of Service also let GitHub users
+view and fork public repositories on GitHub.)
+
+Third-party material keeps its own license and owners: the files in vendor/, the payment
+icons, the map and routing data, and BATA's schedule data. See THIRD-PARTY-NOTICES.md.
+Nothing here limits the rights those licenses give you.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO
+EVENT SHALL HARRISXR LLC BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM
+THE SOFTWARE OR ITS USE.
+
+Permission requests: HarrisXR LLC, https://harrisxr.com

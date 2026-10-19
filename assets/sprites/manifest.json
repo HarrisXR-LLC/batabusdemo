@@ -1,0 +1,220 @@
+{
+ "classes": {
+  "full": {
+   "frames": [
+    "full-iso-00.svg",
+    "full-iso-01.svg",
+    "full-iso-02.svg",
+    "full-iso-03.svg",
+    "full-iso-04.svg",
+    "full-iso-05.svg",
+    "full-iso-06.svg",
+    "full-iso-07.svg",
+    "full-iso-08.svg"
+   ],
+   "length": 12.2,
+   "side": {
+    "file": "full-side.svg",
+    "viewBox": [
+     -63,
+     -36,
+     130,
+     38
+    ]
+   },
+   "tails": [
+    [
+     0.0,
+     31.1
+    ],
+    [
+     -23.7,
+     28.3
+    ],
+    [
+     -43.8,
+     20.6
+    ],
+    [
+     -57.3,
+     9.1
+    ],
+    [
+     -62.0,
+     -4.5
+    ],
+    [
+     -57.3,
+     -18.1
+    ],
+    [
+     -43.8,
+     -29.7
+    ],
+    [
+     -23.7,
+     -37.4
+    ],
+    [
+     -0.0,
+     -40.1
+    ]
+   ],
+   "viewBox": [
+    -64,
+    -63,
+    131,
+    98
+   ]
+  },
+  "medium": {
+   "frames": [
+    "medium-iso-00.svg",
+    "medium-iso-01.svg",
+    "medium-iso-02.svg",
+    "medium-iso-03.svg",
+    "medium-iso-04.svg",
+    "medium-iso-05.svg",
+    "medium-iso-06.svg",
+    "medium-iso-07.svg",
+    "medium-iso-08.svg"
+   ],
+   "length": 7.6,
+   "side": {
+    "file": "medium-side.svg",
+    "viewBox": [
+     -40,
+     -32,
+     84,
+     34
+    ]
+   },
+   "tails": [
+    [
+     0.0,
+     17.9
+    ],
+    [
+     -14.9,
+     16.2
+    ],
+    [
+     -27.6,
+     11.3
+    ],
+    [
+     -36.0,
+     4.1
+    ],
+    [
+     -39.0,
+     -4.5
+    ],
+    [
+     -36.0,
+     -13.1
+    ],
+    [
+     -27.6,
+     -20.3
+    ],
+    [
+     -14.9,
+     -25.2
+    ],
+    [
+     -0.0,
+     -26.9
+    ]
+   ],
+   "viewBox": [
+    -42,
+    -50,
+    86,
+    72
+   ]
+  },
+  "van": {
+   "frames": [
+    "van-iso-00.svg",
+    "van-iso-01.svg",
+    "van-iso-02.svg",
+    "van-iso-03.svg",
+    "van-iso-04.svg",
+    "van-iso-05.svg",
+    "van-iso-06.svg",
+    "van-iso-07.svg",
+    "van-iso-08.svg"
+   ],
+   "length": 6.0,
+   "side": {
+    "file": "van-side.svg",
+    "viewBox": [
+     -32,
+     -29,
+     66,
+     31
+    ]
+   },
+   "tails": [
+    [
+     0.0,
+     13.3
+    ],
+    [
+     -11.9,
+     11.9
+    ],
+    [
+     -21.9,
+     8.1
+    ],
+    [
+     -28.6,
+     2.3
+    ],
+    [
+     -31.0,
+     -4.5
+    ],
+    [
+     -28.6,
+     -11.3
+    ],
+    [
+     -21.9,
+     -17.1
+    ],
+    [
+     -11.9,
+     -20.9
+    ],
+    [
+     -0.0,
+     -22.3
+    ]
+   ],
+   "viewBox": [
+    -34,
+    -42,
+    69,
+    59
+   ]
+  }
+ },
+ "elevation": 35,
+ "generator": "tools/sprites/generate_bus_sprites.py (adapted from the Max's GPS a21 generator)",
+ "headings": [
+  0.0,
+  22.5,
+  45.0,
+  67.5,
+  90.0,
+  112.5,
+  135.0,
+  157.5,
+  180.0
+ ],
+ "mirror": "heading bins 0-15 of 22.5 deg; bins 9-15 use frame 16 - bin, flipped with scaleX(-1)",
+ "units": "decimeters; origin = the vehicle's ground center"
+}
