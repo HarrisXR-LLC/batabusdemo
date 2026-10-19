@@ -1,6 +1,6 @@
 // Story settings, trip-engine settings and flags (plan 1·1 §5.5; values from 1·2 §4 and 1·3 §7).
 // The pretend places and routed paths live in data/bata.json (built by tools/build_bata_data.py).
-export const APP_VERSION = '0.1.2';
+export const APP_VERSION = '0.1.1';
 
 export const CONFIG = {
   timeZone: 'America/Detroit',   // every time shown is Traverse City time

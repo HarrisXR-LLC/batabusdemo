@@ -15,7 +15,7 @@ import { clock, storyDates, toMinutes } from './story.js';
 import { tour } from './tour.js';
 import { button, roundButton, esc } from './ui.js';
 
-const TRIP_NAMES = { 1: 'Trip Demo 1 · Book now', 2: 'Trip Demo 2 · Book ahead', 3: 'Trip Demo 3 · Plan ahead' };
+const TRIP_NAMES = { 1: 'Trip 1 · Book now', 2: 'Trip 2 · Book ahead', 3: 'Trip 3 · Plan ahead' };
 const params = new URLSearchParams(location.search);
 const screens = new Map();
 let body = null, sheet = null, dates = null, current = null, cleanup = null, seq = 0, runId = '', runs = 0;

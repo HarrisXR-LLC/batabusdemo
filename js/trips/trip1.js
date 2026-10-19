@@ -1,4 +1,4 @@
-// Trip Demo 1 · Book now (plan 2·1): from Welcome to "You're here" on real Route 07 times.
+// Trip 1 · Book now (plan 2·1): from Welcome to "You're here" on real Route 07 times.
 // 7:40 book at 123 Sesame Street → 7:46 leave → 7:50 at Meijer Park and Ride → 7:52 your bus is here
 // → 8:00 leaves → 8:05 Grand Traverse Mall North Entrance → 8:07 at work, 23 min early.
 // Every screen renders into the sheet; the map scene for each step comes from scene.js. The live ride
@@ -14,10 +14,9 @@ import { mapSettled } from '../map.js';
 import * as ui from '../ui.js';
 import * as pay from '../pay.js';
 import { moments } from '../preview.js';
-import { welcomePage, tripPage, revealed } from '../prelude.js';
 import { head as baseHead, screen, stopName, optionCards, legItems, rideSteps, previewButton, wirePreview } from './common.js';
 
-const EYEBROW = 'Trip Demo 1 · Book now';
+const EYEBROW = 'Trip 1 · Book now';
 const trip = () => state.trips[1];
 const list = () => engineOptions('trip1', { service: serviceFor(router.dates.trip1) });
 const recommended = () => list().find(o => o.recommended);
@@ -30,9 +29,16 @@ const previewSpec = () => ({ date: router.dates.trip1, legs: [{ id: 'go', label:
 
 // ---------- Welcome, Home, Destination ----------
 
-// The Welcome note and the Trip Demo 1 prelude are full pages (js/prelude.js, mockup B2).
-screen('welcome', { detent: 'full', render: ctx => welcomePage(ctx) });
-screen('t1.intro', { detent: 'full', render: ctx => tripPage(ctx, 1) });
+screen('welcome', {
+  detent: 'half',
+  render: ({ body }) => {
+    body.innerHTML = `<div class="welcome">
+      <p class="welcome-mark" aria-hidden="true">bata<span class="dot"></span><span class="go">go</span></p>
+      <h1 tabindex="-1" data-step-heading>Your bus, made simple.</h1>
+      <p class="muted">Three short trips show how it works.</p>
+      <div class="actions">${ui.button({ label: 'Start', attrs: 'data-primary' })}</div></div>`;
+  },
+});
 
 screen('t1.home', {
   detent: 'peek',
@@ -211,13 +217,13 @@ screen('t1.arrived', {
     ctx.body.innerHTML = `${head(ctx, 'You’re here', { eyebrow: EYEBROW })}
       <p class="big-time"><strong class="tab">${formatTime(o.arrive)}</strong> <span>${early > 0 ? `${early} min early` : 'On time'}</span></p>
       <p class="muted">${ui.esc(`${o.name} · ${formatFare(o.fareCents)} · ${o.doorToDoor} min door to door`)}</p>
-      <div class="actions">${ui.button({ label: 'Next: Trip Demo 2', attrs: 'data-primary' })}</div>`;
+      <div class="actions">${ui.button({ label: 'Next: Trip 2', attrs: 'data-primary' })}</div>`;
   },
 });
 
 // ---------- tips: real targets (plan 2·1 §4); the walker tip waits for the map ----------
 Object.assign(TIPS, {
-  'welcome': [{ target: '[data-primary]', text: 'Tips like this will guide you. Tap OK.', ready: revealed }],   // after the page fades in
+  'welcome': [{ target: '[data-primary]', text: 'Tips like this will guide you. Tap OK.' }],
   't1.home': [{ target: '[data-search]', text: 'Like a ride app: start with where you’re going.' }],
   't1.destination': [{ target: '[data-place="work"]', text: 'Pick a place. Your usual spots are saved.' }],
   't1.options': [{ target: '.opt[aria-checked="true"]', text: 'Real BATA times. Our pick says Recommended.' }],
