@@ -12,11 +12,13 @@ It's made for a phone, held upright. On a computer it shows inside a phone frame
 
 ## What it shows
 
-1. **Book now.** A weekday morning ride to work on Route 07: book and pay in one tap, see your bus live, walk to the stop, show your pass, ride.
-2. **Book ahead.** The fair on July 4, booked that morning, out and back on the free Bayline. You see when a bus is nearly full.
-3. **Plan a week ahead.** A flight at 11:00 AM: a Link van picks you up at your door and drops you at Cherry Capital Airport two hours early.
+A short Welcome note, then three trip demos, each opened by a one-page prelude (the story, and whether it is part of the pilot), then a Thank you page.
 
-**Preview my Ride** on every trip plays the trip step by step before you go.
+1. **Trip Demo 1 · Book now** *(the pilot proposal)*. Your car is in the shop and you're new to BATA: a weekday ride to work on Route 07. Find your bus, book and pay in one tap, watch it come on the live map, walk to the stop, show your pass, ride.
+2. **Trip Demo 2 · Book ahead** *(a future upgrade, not in the pilot)*. The fair on July 4, booked that morning, out and back on the free Bayline. You see when a bus is nearly full.
+3. **Trip Demo 3 · Plan ahead** *(a future upgrade, not in the pilot)*. A flight at 11:00 AM next week: a Link van picks you up at your door and drops you at Cherry Capital Airport two hours early.
+
+**Preview my Ride** plays a trip step by step before you go.
 
 ## Run it locally
 
@@ -49,7 +51,7 @@ Combine them with `&`, for example `index.html?frame=off&today=2026-10-19&step=t
 
 - **Real:** the routes, stops, times and fares come from BATA's published GTFS feed (GMV Syncromatics, feed version 9/7/2026, downloaded 2026-10-18). The map is OpenStreetMap.
 - **Simulated:** the vehicles. Every bus on the map moves on its scheduled times; none are live. The Link vans are pretend.
-- **Proposed, not BATA services today:** booking and paying ahead in an app, booking Link 7 days ahead, paying with wallets and payment apps, and Wallet passes.
+- **Proposed:** everything the app does is a proposal. Trip Demo 1 shows the pilot: the live map of where the buses are, and finding and catching your ride. Trip Demos 2 and 3 show future upgrades that are not part of the pilot (booking ahead, Link trips booked days ahead), and not every payment option shown is part of the pilot either.
 - **Pretend:** the homes ("123 Sesame Street", "77 Sesame Street"), the rider, the card and the sign-in. Nothing is typed in, collected or sent, and no payment is made.
 
 ## Accessibility
@@ -91,4 +93,4 @@ The full list, with license texts, is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NO
 
 ## Version
 
-**V0.1.1** · 2026-10-19
+**V0.1.3** · 2026-10-19

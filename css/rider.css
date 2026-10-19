@@ -1,12 +1,50 @@
 /* Rider screens (plan 2·1 §4–5): welcome, places, review, sign-in and pay, booked, Where's my ride, the pass,
    on board and arrived. Built from the UI kit (ui.css); mockups M1–M4 are the references. */
 
-/* ---------- welcome ---------- */
-.welcome { padding-top: 4px; }
-.welcome-mark { display: flex; align-items: center; margin: 0 0 10px; font-size: 2rem; font-weight: 800; letter-spacing: -.6px; line-height: 1; }
-.welcome-mark .dot { width: 10px; height: 10px; margin: 6px 6px 0; border-radius: 50%; background: var(--bata-lime); }
-.welcome-mark .go { color: var(--bata-blue-strong); font-weight: 600; }
-.sheet-body .welcome h1 { font-size: var(--fs-large-title); font-weight: 700; letter-spacing: -.3px; margin: 0 0 4px; }
+/* ---------- the prelude pages (js/prelude.js, mockup B2): Welcome, Trip Demo 1–3, Thank you ----------
+   Page mode: the sheet becomes a full page under the top bar and covers the map (no handle, no map chips). */
+#screen[data-page] #sheet {
+  top: 0; height: auto !important; max-height: none; border-radius: 0; box-shadow: none;
+  background: radial-gradient(120% 60% at 0% 0%, rgba(28, 176, 232, .16), transparent 60%),
+    radial-gradient(90% 50% at 100% 6%, rgba(148, 216, 0, .14), transparent 55%), var(--white);
+}
+#screen[data-page] .sheet-handle, #screen[data-page] #topfade, #screen[data-page] .map-credits, #screen[data-page] .map-chip { display: none; }
+#screen[data-page] .sheet-body { padding: calc(env(safe-area-inset-top, 0px) + 112px) 26px 24px; }
+body[data-mode="framed"] #screen[data-page] .sheet-body { padding-top: 158px; }
+.prelude { display: flex; flex-direction: column; min-height: 100%; }
+.prelude > .actions { margin-top: auto; padding-top: 24px; }
+.sheet-body .prelude h1 { margin: 0; font-size: var(--fs-large-title); font-weight: 700; letter-spacing: -.4px; line-height: 1.15; }
+.sheet-body .p-mark { display: flex; align-items: center; margin: 0 0 16px; color: var(--g900); font-size: 2.2rem; font-weight: 800; letter-spacing: -.8px; line-height: 1; }
+.p-mark .dot { width: 10px; height: 10px; margin: 6px 5px 0; border-radius: 50%; background: var(--bata-lime); }
+.p-mark .go { color: var(--bata-blue-strong); font-weight: 600; }
+.p-sect { display: flex; align-items: center; gap: 10px; }
+.p-num { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #E6F2F8; color: #035F84; font-size: .88rem; font-weight: 800; }
+.p-sect .eyebrow { margin: 0; color: var(--g600); }
+.sheet-body .prelude .p-title { margin-top: 12px; font-size: 1.85rem; }
+.sheet-body .prelude .p-thanks { font-size: 2.3rem; letter-spacing: -.8px; }
+.p-rule { height: 1px; background: var(--g200); margin: 18px 0 6px; }
+.p-note { margin-top: 24px; padding: 2px 18px 8px; border-radius: 18px; background: rgba(246, 248, 250, .9); border: 1px solid var(--g200); }
+.sheet-body .p-label { margin: 14px 0 0; font-size: var(--fs-footnote); font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--g600); }
+.plist { list-style: none; margin: 8px 0 0; padding: 0; }
+.plist li { display: flex; gap: 12px; align-items: baseline; padding: 10px 0; color: var(--g900); font-size: .97rem; line-height: 1.35; }
+.p-note .plist li { padding: 8px 0; }
+.plist li::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--bata-lime); transform: translateY(-2px); }
+.plist li.scope { margin-top: 8px; padding: 11px 14px; border-radius: 12px; font-weight: 700; }   /* the trip's scope: Pilot or Future */
+.plist li.scope.pilot { background: var(--bata-green-pale); color: var(--bata-green-strong); }    /* 4.8:1 */
+.plist li.scope.vision { background: #E6F2F8; color: #035F84; }                                     /* 6.2:1 */
+.plist li.scope.pilot::before { background: var(--bata-green-strong); }
+.plist li.scope.vision::before { background: #035F84; }
+.hl { font-weight: 700; } .hl.pilot { color: var(--bata-green-strong); } .hl.vision { color: #035F84; }
+.p-contact { margin-top: 16px; padding: 8px 16px; border-radius: 16px; background: var(--g50); border: 1px solid var(--g200); }
+.sheet-body .p-ask { margin: 6px 0 0; color: var(--bata-blue-strong); font-size: var(--fs-footnote); font-weight: 700; letter-spacing: .3px; }
+.sheet-body .p-name { margin: 4px 0 0; color: var(--g900); font-size: var(--fs-body); font-weight: 700; }
+.sheet-body .p-row { display: flex; align-items: center; gap: 8px; min-height: 44px; color: var(--g900); font-size: var(--fs-callout); }
+.p-row svg.i { color: var(--bata-blue-strong); }
+.p-row a { display: inline-block; padding: 12px 0; color: var(--bata-blue-strong); font-weight: 600; text-underline-offset: 2px; }   /* 44px tall to tap */
+/* the fade-in: each line rises into place in turn (~1.1 s in all); prelude.js knows when it's done */
+@keyframes p-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.prelude .rv { animation: p-rise .5s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--k, 0) * 70ms + 150ms); }
+@media (prefers-reduced-motion: reduce) { .prelude .rv { animation: none !important; } }
 
 /* ---------- home: the search pill as a button ---------- */
 .search-btn { width: 100%; border: 0; cursor: pointer; text-align: left; font-size: 1.1rem; font-weight: 600; }
@@ -97,15 +135,12 @@
 .stop-time { color: var(--g600); font-size: var(--fs-callout); }
 .stop-row.passed .stop-name, .stop-row.passed .stop-time { color: var(--g600); text-decoration: line-through; }
 
-/* ---------- trip 3: airport header, When, Arrive by, the end ---------- */
+/* ---------- trip 3: airport header, When, Arrive by ---------- */
 .dest-head .row-ic svg.filled { fill: currentColor; stroke: none; }
 .here-line { display: flex; align-items: center; gap: 5px; }
 .sheet-body .when-line, .sheet-body .when-picked { margin: 4px 0 0; }
 .sheet-body .when-picked { color: var(--g900); font-weight: 600; }
 .other-time { margin-top: 8px; }
-.end-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
-.end-list li { display: flex; align-items: center; gap: 12px; font-weight: 600; }
-.done-check.small { width: 28px; height: 28px; }
 
 /* ---------- Preview my Ride (M8) ---------- */
 .pv { padding-bottom: 80px; }                       /* room under the scrubber for a tip's buttons */

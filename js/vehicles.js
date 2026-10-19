@@ -3,7 +3,7 @@
 //     The frame is the vehicle's heading minus the map's bearing (a port of Max's GPS frameChoice()).
 //   - Others: 0.34 px per decimeter, slightly dimmed, a soft static shadow, no effects.
 //   - Yours: ×1.4, full color, on top. Moving: it bobs and puffs exhaust from the manifest's tail point.
-//     Waiting at a stop: idle smoke and a small shudder. Reduced motion: no effects, positions once a second.
+//     Waiting at a stop: idle smoke and a small shudder. Reduced motion: no effects, positions 10 times a second.
 //   - Link vans have no schedule, so a few are simulated, driving back and forth on routed streets.
 // Each marker's content sits in an inner wrapper; the map positions the root (never styled).
 import { DATA, vehiclesAt, pathAt } from './data.js';

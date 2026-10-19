@@ -4,7 +4,8 @@
 //   plan     home + ride + destination, pitch 0
 //   ride     Where's my ride: you + your vehicle, refit gently (at most every 2 s)
 //   live     follows the story: walking (zoom 17) → at the stop (17.5) → on board (follow, pitch 55°,
-//            bearing along travel, 16.5; 90° − 35° sprite elevation, so the buses sit on the map) → arrived
+//            bearing along travel, 16.5; 90° − 35° sprite elevation, so the buses sit on the map; with
+//            reduced motion north stays up) → arrived
 //   arrived  ease back to pitch 0; stop + destination
 // Phase 2 may change which option is "yours" (state.trips[n].optionId, and returnId for trip 2's ride back);
 // otherwise it's the Recommended one.
@@ -230,8 +231,10 @@ export async function initScenes(stage) {
     if (phase === 'walking') stage.follow(rider.at, { zoom: 17, pitch: 0, bearing: 0, duration: ease });
     else if (phase === 'stop') { if (changed) stage.follow(rider.at, { zoom: 17.5, pitch: 0, bearing: 0, duration: ease }); }
     else if (phase === 'riding' && vehicle) {
+      // Reduced motion: the map never turns (north stays up), so the bus picture turns on screen the way it
+      // really goes. Snapping the map to the bus once a second made turns look backwards (V0.1.3, S21+ report).
       const cur = stage.bearing(), diff = ((vehicle.heading - cur + 540) % 360) - 180;
-      const bearing = changed || motionReduced() ? vehicle.heading : cur + diff * 0.06;
+      const bearing = motionReduced() ? 0 : changed ? vehicle.heading : cur + diff * 0.06;
       stage.follow([vehicle.lon, vehicle.lat], { zoom: 16.5, pitch: 55, bearing, duration: ease, top: 120, bottom: 40 });
     } else if (phase === 'home') { if (changed) frame([rider.at, o.kind === 'bus' ? stopLL(o.board) : null], { maxZoom: 17 }); }
     else if (phase === 'arrived' && changed) frame(o.kind === 'link' ? [rider.at] : [stopLL(o.alight), place(L.to)], { maxZoom: 17 });
@@ -254,7 +257,7 @@ export async function initScenes(stage) {
   }
 
   function loop(now) {
-    const every = motionReduced() ? 1000 : 33;     // ~30 fps; reduced motion steps once a second
+    const every = motionReduced() ? 100 : 33;      // ~30 fps; reduced motion: 10 steps a second (once a second read as broken)
     if (now - lastTick >= every && !document.hidden) { lastTick = now; tick(now); }
     requestAnimationFrame(loop);
   }

@@ -1,4 +1,4 @@
-// Trip 2 · Book ahead, same day (plan 2·2): on Sunday, July 4, 2027, at 9:30 AM, book the free Bayline
+// Trip Demo 2 · Book ahead, same day (plan 2·2): on Sunday, July 4, 2027, at 9:30 AM, book the free Bayline
 // out to the fair near the marina and the ride back that evening, in one go; then ride both legs.
 //   Going: leave 77 Sesame Street 11:07 → Commons 11:13 → Union St 11:31 → the fair 11:34 ("Almost full")
 //   Return: leave the fair 6:45 PM → Hall St 6:52 (the bus has waited since 6:49) → 7:00 → Commons 7:07 → home 7:11
@@ -13,9 +13,10 @@ import { TIPS } from '../steps.js';
 import * as ui from '../ui.js';
 import { rideCard, liveRide } from '../ride.js';
 import { moments } from '../preview.js';
+import { tripPage } from '../prelude.js';
 import { head as baseHead, screen, stopName, optionCards, legItems, rideSteps, previewButton, wirePreview } from './common.js';
 
-const EYEBROW = 'Trip 2 · Book ahead';
+const EYEBROW = 'Trip Demo 2 · Book ahead';
 const trip = () => state.trips[2];
 const service = () => serviceFor(router.dates.trip2);
 const going = () => engineOptions('trip2', { service: service() });
@@ -49,14 +50,7 @@ async function keepRecommended(group, list) {
 
 // ---------- Intro, Home, Destination ----------
 
-screen('t2.intro', {
-  detent: 'half',
-  render: ctx => {
-    ctx.body.innerHTML = `${head(ctx, 'Trip 2 · Book ahead', { eyebrow: '' })}
-      <p class="muted">${ui.esc(`${day()}, 2027 · Downtown is busy.`)}</p>
-      <div class="actions">${ui.button({ label: 'Start', attrs: 'data-primary' })}</div>`;
-  },
-});
+screen('t2.intro', { detent: 'full', render: ctx => tripPage(ctx, 2) });   // the Trip Demo 2 prelude (js/prelude.js)
 
 screen('t2.home', {
   detent: 'peek',
@@ -246,14 +240,14 @@ screen('t2.home2', {
     ctx.body.innerHTML = `${head(ctx, 'Home')}
       <p class="big-time"><strong class="tab">${formatTime(o.arrive)}</strong> <span>Both rides done</span></p>
       ${ui.tripTimeline({ legs: legs(), selected: 'back', expanded: true })}
-      <div class="actions">${ui.button({ label: 'Next: Trip 3', attrs: 'data-primary' })}</div>`;
+      <div class="actions">${ui.button({ label: 'Next: Trip Demo 3', attrs: 'data-primary' })}</div>`;
     return ui.wireTripTimeline(ctx.body.querySelector('.trip-tl'));
   },
 });
 
 // ---------- tips: only what's new in trip 2 (plan 2·2 §4) ----------
+// (No tip on the Trip Demo 2 prelude: its page says what comes next.)
 Object.assign(TIPS, {
-  't2.intro': [{ target: '[data-primary]', text: 'Next: book a trip for later today.' }],
   't2.options': [{ target: '.opt[aria-checked="true"] .badge.amber', text: 'Busy day? You’ll see when a bus is nearly full.' }],
   't2.return': [{ target: '[data-add]', text: 'Add your ride back now. Done and out of the way.' }],
   't2.review': [{ target: '[data-book]', text: 'Bayline is free. Booking still holds your spot.' }],

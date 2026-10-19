@@ -1,8 +1,8 @@
-// Trip 3 · A flight, a week ahead (plan 2·3): on trip 1's date at 7:00 PM, say "I'm here", pick Cherry
+// Trip Demo 3 · A flight, a week ahead (plan 2·3): on trip 1's date at 7:00 PM, say "I'm here", pick Cherry
 // Capital Airport and next week's date, arrive by 9:00 AM for an 11:00 flight, and book a Link van to your
 // door ($6, the saved card, one tap). Preview my Ride before and after booking. On the travel day the van
 // comes to you (8:35), drives 12.4 min on real streets, and drops you at 8:50: 2 h 10 min before the flight.
-// Then the end screen and Restart. Tips only for what's new.
+// Then the Thank you page and Restart. Tips only for what's new.
 import { router } from '../router.js';
 import { state } from '../state.js';
 import { formatTime, formatDate, addDays, toMinutes } from '../story.js';
@@ -13,9 +13,10 @@ import { TIPS } from '../steps.js';
 import * as ui from '../ui.js';
 import * as pay from '../pay.js';
 import { openPreview, moments } from '../preview.js';
+import { tripPage, thanksPage } from '../prelude.js';
 import { head as baseHead, screen, optionCards, legItems, rideSteps, previewButton, wirePreview } from './common.js';
 
-const EYEBROW = 'Trip 3 · Plan ahead';
+const EYEBROW = 'Trip Demo 3 · Plan ahead';
 const trip = () => state.trips[3];
 const list = () => engineOptions('trip3', { service: serviceFor(router.dates.trip3travel) });
 const recommended = () => list().find(o => o.recommended);
@@ -44,14 +45,7 @@ const airportHead = ctx => `<div class="dest-head">${ctx.canGoBack ? ui.roundBut
 
 // ---------- Intro, Home ("I'm here"), Destination ----------
 
-screen('t3.intro', {
-  detent: 'half',
-  render: ctx => {
-    ctx.body.innerHTML = `${head(ctx, 'Trip 3 · Plan ahead', { eyebrow: '' })}
-      <p class="muted">A flight next week.</p>
-      <div class="actions">${ui.button({ label: 'Start', attrs: 'data-primary' })}</div>`;
-  },
-});
+screen('t3.intro', { detent: 'full', render: ctx => tripPage(ctx, 3) });   // the Trip Demo 3 prelude (js/prelude.js)
 
 screen('t3.home', {
   detent: 'peek',
@@ -258,19 +252,11 @@ screen('t3.arrived', {
 
 // ---------- The end ----------
 
-screen('end', {
-  detent: 'half',
-  render: ctx => {
-    ctx.body.innerHTML = `<div class="end">${head(ctx, 'That’s the demo.', { eyebrow: '' })}
-      <ul class="end-list">${['Book now', 'Book ahead', 'Plan a week ahead'].map(t => `<li><span class="done-check small" aria-hidden="true">${ui.icon('check', 'i s')}</span>${t}</li>`).join('')}</ul>
-      <div class="actions">${ui.button({ label: 'Restart', attrs: 'data-primary' })}</div>
-      <p class="fine">harrisxr.com/bata</p></div>`;
-  },
-});
+screen('end', { detent: 'full', render: ctx => thanksPage(ctx) });   // "Thank you", the benefits, the contact card, Restart
 
 // ---------- tips: only what's new in trip 3 (plan 2·3 §4) ----------
+// (No tips on the Trip Demo 3 prelude or the Thank you page: they speak for themselves.)
 Object.assign(TIPS, {
-  't3.intro': [{ target: '[data-primary]', text: 'Next: a big trip, a week ahead.' }],
   't3.home': [{ target: '[data-here]', text: 'Tap I’m here. We’ll pick you up where you are.' }],
   't3.when': [{ target: `[data-day="${CONFIG.story.trip3.daysAhead}"]`, text: 'Book up to 7 days ahead.' }],
   't3.arriveBy': [{ target: '[data-time="09:00"]', side: 'left', text: 'Flight at 11:00? Arrive by 9:00, two hours early.' }],
@@ -278,5 +264,4 @@ Object.assign(TIPS, {
   't3.review': [{ target: '[data-preview]', text: 'Nervous? Preview every step first.' }],
   't3.preview': [{ target: '.scrub .thumb', side: 'right', text: 'Drag, or tap Next, to see each step.' }],
   't3.link': [{ target: '.veh-card', text: 'Watch your van come to you.' }],
-  'end': [{ target: '[data-primary]', text: 'Restart any time to see it again.' }],
 });
