@@ -108,7 +108,11 @@ body[data-mode="framed"] #sheet { bottom: calc(var(--footer-h) + 30px); max-heig
   cursor: grab; touch-action: none; border-radius: var(--r-sheet) var(--r-sheet) 0 0;
 }
 .sheet-handle::before { content: ""; width: 38px; height: 5px; border-radius: 3px; background: #D3D9DF; }
-.sheet-body { flex: 1; overflow: auto; padding: 0 var(--gutter) 16px; overscroll-behavior: contain; }
+.sheet-handle:focus-visible { outline-offset: -3px; }   /* full width: the ring goes inside, not off the screen's edges */
+/* 6px on top and scroll-padding keep a control's focus ring (5px outside it) inside the scrolling sheet: the
+   top of "Where to?" was cut off, and Tab scrolled controls in only as far as their edge */
+.sheet-body { flex: 1; overflow: auto; padding: 6px var(--gutter) 16px; scroll-padding-block: 8px; overscroll-behavior: contain; }
+.sheet-body:focus-visible { outline-offset: -3px; }   /* the sheet itself takes focus when its content scrolls (On board) */
 .sheet-body h1 { font-size: var(--fs-title); font-weight: 600; margin: 4px 0 4px; }
 .sheet-body p { margin: 0; color: var(--g600); font-size: var(--fs-callout); }
 

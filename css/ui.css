@@ -46,7 +46,8 @@
 .search input::placeholder { color: var(--g600); font-weight: 500; opacity: 1; }
 
 /* ---------- chips ---------- */
-.chips { display: flex; gap: 8px; margin: 12px 0 4px; padding: 4px 2px; overflow-x: auto; scrollbar-width: none; }
+/* The row scrolls, so it clips: 6px of padding holds a chip's focus ring; the margins keep the chips where they were */
+.chips { display: flex; gap: 8px; margin: 10px -6px 2px; padding: 6px; overflow-x: auto; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chips.fade {  /* a scrolling row (M7): soft edges show there is more */
   margin-left: calc(var(--gutter) * -1); margin-right: calc(var(--gutter) * -1); padding-left: var(--gutter); padding-right: var(--gutter);
