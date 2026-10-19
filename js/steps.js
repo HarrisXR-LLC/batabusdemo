@@ -13,6 +13,7 @@ const S = (id, title, at, extra = {}) => ({ id, title, at, trip: id === 'welcome
 export const STEPS = [
   S('welcome', 'Welcome', ['trip1', '07:40'], { primary: 'Start' }),
 
+  S('t1.intro', 'Trip Demo 1 · Book now', ['trip1', '07:40'], { primary: 'Start' }),   // the prelude pages (js/prelude.js)
   S('t1.home', 'Where to?', ['trip1', '07:40']),
   S('t1.destination', 'Destination', ['trip1', '07:40']),
   S('t1.options', 'Options', ['trip1', '07:41']),
@@ -25,9 +26,9 @@ export const STEPS = [
   S('t1.stop', 'At the stop', ['trip1', '07:50'], { primary: 'Board', demo: 'Jump to 30 s', jumpTo: '07:51:30', run: 0.2 }),
   S('t1.board', 'Boarding pass', ['trip1', '07:52'], { primary: "I'm on board" }),
   S('t1.onboard', 'On board', ['trip1', '08:00'], { run: 0.2 }),
-  S('t1.arrived', "You're here", ['trip1', '08:07'], { primary: 'Next: Trip 2' }),
+  S('t1.arrived', "You're here", ['trip1', '08:07'], { primary: 'Next: Trip Demo 2' }),
 
-  S('t2.intro', 'Trip 2 · Book ahead', ['trip2', '09:30'], { primary: 'Start' }),
+  S('t2.intro', 'Trip Demo 2 · Book ahead', ['trip2', '09:30'], { primary: 'Start' }),
   S('t2.home', 'Where to?', ['trip2', '09:30']),
   S('t2.destination', 'Destination', ['trip2', '09:30']),
   S('t2.options', 'Options', ['trip2', '09:31']),
@@ -46,9 +47,9 @@ export const STEPS = [
   S('t2.stopBack', 'At the stop', ['trip2', '18:52'], { primary: 'Board' }),   // the bus has waited there since 6:49
   S('t2.boardBack', 'Boarding pass', ['trip2', '18:52'], { primary: "I'm on board" }),
   S('t2.onboardBack', 'On board', ['trip2', '19:00'], { run: 0.3 }),
-  S('t2.home2', 'Home', ['trip2', '19:11'], { primary: 'Next: Trip 3' }),
+  S('t2.home2', 'Home', ['trip2', '19:11'], { primary: 'Next: Trip Demo 3' }),
 
-  S('t3.intro', 'Trip 3 · Plan ahead', ['trip3book', '19:00'], { primary: 'Start' }),
+  S('t3.intro', 'Trip Demo 3 · Plan ahead', ['trip3book', '19:00'], { primary: 'Start' }),
   S('t3.home', 'Where to?', ['trip3book', '19:00']),
   S('t3.destination', 'Destination', ['trip3book', '19:00']),
   S('t3.when', 'When', ['trip3book', '19:01']),
@@ -62,7 +63,7 @@ export const STEPS = [
   S('t3.onboard', 'On board', ['trip3travel', '08:37'], { run: 0.6 }),     // the van waits 2 min at your door, then goes
   S('t3.arrived', 'At the airport', ['trip3travel', '08:50'], { primary: 'Finish' }),
 
-  S('end', "That's the demo", ['trip3travel', '08:50'], { primary: 'Restart' }),
+  S('end', 'Thank you', ['trip3travel', '08:50'], { primary: 'Restart' }),
 ];
 
 export const STEP_INDEX = new Map(STEPS.map((s, i) => [s.id, i]));
@@ -85,7 +86,6 @@ export const TIPS = {
   't1.onboard': [{ target: main, text: 'Ride along. We’ll tell you when to get off.' }],
   't1.arrived': [{ target: main, text: 'Next: book ahead for later in the day.' }],
 
-  't2.intro': [{ target: main, text: 'Next: book a trip for later today.' }],
   't2.options': [{ target: main, text: 'Busy day? You’ll see when a bus is nearly full.' }],
   't2.return': [{ target: main, text: 'Add your ride back now. Done and out of the way.' }],
   't2.review': [{ target: main, text: 'Bayline is free. Booking still holds your spot.' }],
@@ -94,7 +94,6 @@ export const TIPS = {
   't2.arrived': [{ target: demo, text: 'Demo: skip to your ride back.' }],
   't2.home2': [{ target: main, text: 'Next: plan a big trip a week ahead.' }],
 
-  't3.intro': [{ target: main, text: 'Next: a big trip, a week ahead.' }],
   't3.home': [{ target: main, text: 'Tap I’m here. We’ll pick you up where you are.' }],
   't3.when': [{ target: main, text: 'Book up to 7 days ahead.' }],
   't3.arriveBy': [{ target: main, text: 'Flight at 11:00? Arrive by 9:00, two hours early.' }],
@@ -102,5 +101,5 @@ export const TIPS = {
   't3.review': [{ target: main, text: 'Nervous? Preview every step first.' }],
   't3.preview': [{ target: main, text: 'Drag, or tap Next, to see each step.' }],
   't3.link': [{ target: main, text: 'Watch your van come to you.' }],
-  'end': [{ target: main, text: 'Restart any time to see it again.' }],
 };
+// The prelude pages (t1.intro, t2.intro, t3.intro) and the Thank you page have no tips: they explain themselves.
