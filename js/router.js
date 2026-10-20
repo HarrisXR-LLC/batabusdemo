@@ -88,11 +88,15 @@ export async function go(id, { history: mode = 'push', clockAt = null, keepClock
   if (typeof cleanup === 'function') cleanup();
   cleanup = null;
 
+  // Going forward on the same day never sets the clock back: a screen whose clock ran in real time
+  // (Where's my ride) hands its time on to the next one (V0.1.4). Back, Restart and deep links still set it.
+  const forward = mode === 'push' && current && STEP_INDEX.get(step.id) > STEP_INDEX.get(current.id);
+  const ahead = forward && !clockAt && dates[step.at[0]] === state.story.date && state.story.clock > toMinutes(step.at[1]);
   current = step;
   state.step = step.id;
   state.story.trip = step.trip;
   state.trips[step.trip].step = step.id;
-  if (!keepClock) clock.set(clockAt || step.at[1], dates[step.at[0]]);   // keepClock: redraw where the story is (after a preview)
+  if (!keepClock && !ahead) clock.set(clockAt || step.at[1], dates[step.at[0]]);   // keepClock: redraw where the story is (after a preview)
   if (mode === 'push') history.pushState(entry(step, 'push'), '');
   else if (mode === 'replace') history.replaceState(entry(step, 'replace'), '');
 
@@ -106,10 +110,15 @@ export async function go(id, { history: mode = 'push', clockAt = null, keepClock
   settle();
   if (mine !== seq) return;
 
-  if (step.run) {   // live parts: the clock runs until the next step's story time
-    const nxt = nextOf(step);
-    const stopAt = nxt && dates[nxt.at[0]] === state.story.date ? toMinutes(nxt.at[1]) : Infinity;
-    clock.run(step.run, stopAt);
+  if (step.run) {   // live parts: the clock runs until the next later story time (steps at the same time are skipped)
+    const from = ahead ? toMinutes(step.at[1]) : state.story.clock;   // carried forward: still stop at the next step's time
+    let stopAt = Infinity;
+    for (let i = STEP_INDEX.get(step.id) + 1; i < STEPS.length; i++) {
+      const s = STEPS[i];
+      if (dates[s.at[0]] !== state.story.date) break;
+      if (toMinutes(s.at[1]) > from + 1e-9) { stopAt = toMinutes(s.at[1]); break; }
+    }
+    clock.run(step.run, Math.max(stopAt, state.story.clock));   // never back
   }
 }
 

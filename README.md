@@ -8,7 +8,7 @@ A phone-first web app that shows how riding a BATA bus could feel like getting a
 
 **[Open the demo](https://harrisxr-llc.github.io/batabusdemo/)**
 
-It's made for a phone, held upright. On a computer it shows inside a phone frame, with a QR code to open it on your phone. The whole demo takes about four minutes.
+It's made for a phone, held upright. On a computer it shows inside a phone frame, with a QR code to open it on your phone. The whole demo takes about five minutes.
 
 ## What it shows
 
@@ -93,4 +93,4 @@ The full list, with license texts, is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NO
 
 ## Version
 
-**V0.1.3** · 2026-10-19
+**V0.1.4** · 2026-10-19

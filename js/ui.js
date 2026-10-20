@@ -299,6 +299,12 @@ function scheduleBannerHide() {
   clearTimeout(bannerTimer);
   if (bannerEl && !state.tour.showing && !reducedMotion.matches) bannerTimer = setTimeout(() => hideBanner(), 4000);
 }
+// Keyboard focus comes first: the banner gets out of the way of a control it would cover (WCAG 2.4.11).
+function bannerYield(e) {
+  if (!bannerEl || bannerEl.contains(e.target) || !e.target.getBoundingClientRect) return;
+  const a = bannerEl.getBoundingClientRect(), b = e.target.getBoundingClientRect();
+  if (b.left < a.right && b.right > a.left && b.top < a.bottom && b.bottom > a.top) hideBanner(true);
+}
 export function hideBanner(now = false) {
   clearTimeout(bannerTimer);
   const el = bannerEl;
@@ -348,5 +354,6 @@ export function initUI(screen) {
   announcer.id = 'announcer';
   screen.append(announcer);
   on('tour', showing => { if (showing) clearTimeout(bannerTimer); });   // a tip pins the banner until tapped
+  document.addEventListener('focusin', bannerYield);
   on('reset', () => { statusPill(null); hideBanner(true); });
 }

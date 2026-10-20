@@ -2,7 +2,8 @@
 //   - Sprites: pre-rendered isometric SVGs (assets/sprites/), 9 frames mirrored to 16 directions.
 //     The frame is the vehicle's heading minus the map's bearing (a port of Max's GPS frameChoice()).
 //   - Others: 0.34 px per decimeter, slightly dimmed, a soft static shadow, no effects.
-//   - Yours: ×1.4, full color, on top. Moving: it bobs and puffs exhaust from the manifest's tail point.
+//   - Yours: ×1.4, full color, on top, with a "Your bus" tag (below the picture when there's no room above it).
+//     Moving: it bobs and puffs exhaust from the manifest's tail point.
 //     Waiting at a stop: idle smoke and a small shudder. Reduced motion: no effects, positions 10 times a second.
 //   - Link vans have no schedule, so a few are simulated, driving back and forth on routed streets.
 // Each marker's content sits in an inner wrapper; the map positions the root (never styled).
@@ -32,6 +33,7 @@ export function frameChoice(heading, mapBearing = 0) {
 }
 
 const zoomScale = z => Math.max(0.8, Math.min(1.3, 1 + (z - 15) * 0.12));
+const TAG_H = 26;   // the tag's height with its ring (map.css: 13 px text, fixed)
 
 class VehicleMarker {
   constructor(stage, cls, { yours = false } = {}) {
@@ -40,12 +42,15 @@ class VehicleMarker {
     this.yours = yours;
     this.el = document.createElement('div');
     this.el.className = `veh ${yours ? 'yours' : 'dim'}`;
+    // Yours carries a "Your bus" tag (a Link van: "Your ride") with a pointer, just above the picture (V0.1.4)
+    const tag = yours ? `<div class="yours-tag" aria-hidden="true"><span>${cls === 'van' ? 'Your ride' : 'Your bus'}</span></div>` : '';
     this.el.innerHTML = `<div class="veh-shadow"></div>${yours ? '<div class="exhaust" aria-hidden="true"></div>' : ''}
-      <div class="veh-bob"><div class="veh-flip"><img class="veh-sprite" alt="" decoding="async"></div></div>`;
+      <div class="veh-bob"><div class="veh-flip"><img class="veh-sprite" alt="" decoding="async"></div></div>${tag}`;
     this.img = this.el.querySelector('img');
     this.flip = this.el.querySelector('.veh-flip');
     this.shadow = this.el.querySelector('.veh-shadow');
     this.exhaust = this.el.querySelector('.exhaust');
+    this.tag = this.el.querySelector('.yours-tag');
     this.marker = stage.marker(this.el, { z: yours ? 30 : 10 });
     this.key = '';
     this.mode = '';
@@ -64,6 +69,10 @@ class VehicleMarker {
     Object.assign(this.img.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
     this.flip.classList.toggle('mirrored', f.mirrored);
     Object.assign(this.shadow.style, { left: `${-L * 0.32}px`, top: `${-L * 0.09}px`, width: `${L * 0.64}px`, height: `${L * 0.18}px` });
+    if (this.tag) {   // over the picture's middle, 9 px above it (or below it)
+      this.tagAt = { above: y - 9, below: y + h + 9 };
+      Object.assign(this.tag.style, { left: `${f.mirrored ? -(x + w / 2) : x + w / 2}px`, top: `${this.below ? this.tagAt.below : this.tagAt.above}px` });
+    }
     if (this.exhaust) this.smoke(c, f, k, L, mode);
     if (mode !== this.mode) { if (this.mode) this.el.classList.remove(this.mode); this.el.classList.add(mode); this.mode = mode; }
   }
@@ -84,6 +93,17 @@ class VehicleMarker {
       this.exhaust.className = `exhaust ${mode === 'driving' ? 'drive' : 'park'}`;
       this.exhaust.innerHTML = [0, 1, 2, 3].map(i => `<span class="puff" style="animation-delay:-${(i * dur / 4).toFixed(2)}s"><svg viewBox="-48 -48 96 96"><path d="${PUFF}"/></svg></span>`).join('');
     }
+  }
+
+  /** The tag flips below the picture when its top would go under `safe` (map px), and back when there's room again. */
+  tagRoom(py, safe) {
+    if (!this.tag || !this.tagAt) return;
+    const top = py + this.tagAt.above - TAG_H;
+    const below = top < safe + (this.below ? 12 : 2);   // 10 px apart, so it doesn't flicker at the line
+    if (below === !!this.below) return;
+    this.below = below;
+    this.tag.classList.toggle('below', below);
+    this.tag.style.top = `${below ? this.tagAt.below : this.tagAt.above}px`;
   }
 
   show(on) { this.marker.show(on); }
@@ -165,7 +185,19 @@ export class Fleet {
       this.yours.update(p, bearing, zoom);
       this.yours.show(true);
       this.yourPosition = p;
+      this.yours.tagRoom(this.stage.project([p.lon, p.lat]).y, this.safeTop());
     }
+  }
+
+  /** The lowest edge of the top bar or the status pill, in map px: the tag stays below it. Read at most twice a second. */
+  safeTop() {
+    const now = performance.now();
+    if (this.safe && now - this.safe.at < 500) return this.safe.y;
+    const c = this.stage.container, box = c.getBoundingClientRect(), k = box.width / c.clientWidth || 1;
+    let y = 0;
+    for (const el of document.querySelectorAll('#topbar, .pill')) { const r = el.getBoundingClientRect(); if (r.height) y = Math.max(y, (r.bottom - box.top) / k); }
+    this.safe = { at: now, y };
+    return y;
   }
 }
 

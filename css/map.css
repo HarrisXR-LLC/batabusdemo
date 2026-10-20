@@ -12,6 +12,24 @@
 .veh.dim .veh-sprite { opacity: .6; filter: saturate(.55) brightness(1.04); }
 .veh.yours .veh-sprite { filter: drop-shadow(0 0 1px rgba(17, 24, 32, .55)); }   /* a soft edge: a white van stays visible on a white road */
 
+/* "Your bus" (V0.1.4): a blue tag with a pointer just above your vehicle, so it's clear which one is yours.
+   A white ring keeps it clear on any map color. It floats twice when it first shows (4.8 s, under WCAG 2.2.2's 5 s;
+   transform only), then holds still; with reduced motion it doesn't float. With no room above (under the top bar or the
+   status pill, on short screens) it flips below the picture, pointing up (.below, set by vehicles.js). */
+.yours-tag { --tag-y: -100%; position: absolute; z-index: 2; transform: translate(-50%, var(--tag-y)); pointer-events: none; animation: tag-float 2.4s ease-in-out 2; }
+.yours-tag.below { --tag-y: 0%; }
+.yours-tag span {
+  position: relative; display: block; padding: 5px 11px 6px; border-radius: 999px; white-space: nowrap;
+  background: var(--bata-blue-strong); color: var(--white); font: 700 13px/1 var(--font); letter-spacing: .1px;
+  box-shadow: 0 0 0 2px var(--white), 0 6px 16px rgba(4, 63, 88, .35);
+}
+.yours-tag span::after {   /* the pointer: a turned square whose two lower edges carry the white ring */
+  content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; margin-left: -5px;
+  background: var(--bata-blue-strong); transform: rotate(45deg); border-radius: 0 0 2px 0; box-shadow: 2px 2px 0 0 var(--white);
+}
+.yours-tag.below span::after { top: -5px; bottom: auto; transform: rotate(225deg); }
+@keyframes tag-float { 0%, 100% { transform: translate(-50%, var(--tag-y)); } 50% { transform: translate(-50%, calc(var(--tag-y) - 3px)); } }
+
 /* Yours: bobs while driving (Max's road-motion, peaks raised for the 1.4× size), shudders while waiting. */
 .veh.yours.driving .veh-bob { animation: road-motion 2.8s ease-in-out infinite; }
 .veh.yours.idle .veh-bob { animation: idle-motion 7.4s linear infinite; }
@@ -114,7 +132,7 @@
 
 /* ---------- preferences ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .veh .veh-bob, .walker-ring { animation: none !important; }
+  .veh .veh-bob, .walker-ring, .yours-tag { animation: none !important; }
   .exhaust { display: none; }
 }
 @media (prefers-contrast: more) {

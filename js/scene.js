@@ -191,20 +191,58 @@ export async function initScenes(stage) {
     const lines = linesFor(option);
     for (const [k, v] of Object.entries(lines)) stage.setLines(k, v);
     fleet.setScene({ service, yours: yours ? option : null, vans: true });
-    camState = { phase: null, refit: 0, until: 0 };
+    camState = { phase: null, both: 0, until: 0 };
     tick(performance.now(), true);
     queueEdges();
   }
 
   function frame(points, opts = {}) { stage.fit(points.filter(Boolean), opts); queueEdges(); }
 
-  function camera(now, rider, vehicle, initial) {
+  /**
+   * You and your vehicle, both in view, while it's 30 min away or less (V0.1.4). Guarded so it stays cheap and calm:
+   * checked a few times a second, the camera eases only when one of you nears the edge of the view, or when you're
+   * close enough together to zoom in. Reduced motion: checked once a second, with no easing.
+   */
+  function keepBoth(now, points, { maxZoom = 17, initial = false } = {}) {
+    const pts = points.filter(Boolean);
+    if (!pts.length) return;
+    const reduced = motionReduced();
+    if (!initial && (now - camState.both < (reduced ? 1000 : 400) || now < camState.until)) return;
+    // The band you're both kept in (at least 50 px tall): below the bar, the pill and the tag (210 px), and above the
+    // sheet with room for the bus picture (50 px). On short screens the top gives way first (to 120), so you both stay
+    // above the sheet; on the smallest (320 × 568) the tag can then slide under the pill.
+    const { w, h } = stage.size(), sheetTop = h - stage.sheetSpace, below = 50, band = 50;
+    const top = Math.max(120, Math.min(210, sheetTop - below - band));
+    const bottom = Math.min(h - top - band, stage.sheetSpace + below);   // the padding stage.fit uses with these
+    if (!initial) {
+      // the same band plus some slack (else a framed view could count as out and refit again and again);
+      // 40 px at the sides keeps the whole bus picture on screen (stage.fit frames 60 px in)
+      const q = pts.map(p => stage.project(p)), xs = q.map(p => p.x), ys = q.map(p => p.y);
+      const edge = { l: 40, r: w - 40, t: top - 12, b: h - bottom + 20 };
+      const out = q.some(p => p.x < edge.l || p.x > edge.r || p.y < edge.t || p.y > edge.b);
+      const loose = Math.max(...xs) - Math.min(...xs) < (w - 120) * 0.35 && Math.max(...ys) - Math.min(...ys) < (edge.b - top) * 0.35
+        && stage.zoom() < maxZoom - 0.3;
+      camState.both = now;
+      if (!out && !loose) return;
+    }
+    const d = reduced ? 0 : initial ? 1100 : 900;
+    frame(pts, { maxZoom, top, bottom: below, band, duration: d });
+    camState.both = now;
+    camState.until = now + d;
+  }
+
+  function camera(now, rider, vehicle, initial, t) {
     const s = scene, o = s.option, L = s.leg && LEGS[s.leg];
     const place = n => DATA.places[n];
     const stopLL = id => [DATA.stops[id].lon, DATA.stops[id].lat];
     if (s.camera === 'preview') return;                 // Preview my Ride sets the camera itself
     if (s.camera === 'overview') { if (initial) frame([place('home123'), place('work'), place('home77'), place('fair')], { maxZoom: 14 }); return; }
     if (!o) return;
+    // Your vehicle is on the road, 30 min away or less, and you haven't boarded: keep you both in view
+    const tt = s.travelDay ? t : -Infinity, boarded = o.kind === 'link' ? o.pickupEnd : Math.max(o.depart, o.here + 0.5);
+    const close = s.yours && !!vehicle && vehicle.onRoad !== false && o.here - tt <= 30 && tt < boarded;
+    const busLL = vehicle && vehicle.onRoad !== false ? [vehicle.lon, vehicle.lat] : null, yourStop = o.kind === 'bus' ? stopLL(o.board) : null;
+    if (s.camera === 'plan' && close) { keepBoth(now, [rider?.at, busLL, yourStop], { maxZoom: 16.5, initial }); return; }
     if (s.camera === 'plan') {
       if (initial) frame(o.kind === 'link' ? [place(L.from), place(L.to), ...DATA.paths[o.path].coords] :
         [place(L.from), stopLL(o.board), ...linesFor(o).ride[0], stopLL(o.alight), place(L.to)], { maxZoom: 16 });
@@ -214,17 +252,18 @@ export async function initScenes(stage) {
       if (initial) frame(o.kind === 'link' ? [place(L.to), DATA.paths[o.path].coords.at(-1)] : [stopLL(o.alight), place(L.to)], { maxZoom: 17 });
       return;
     }
-    if (s.camera === 'ride') {   // you + your vehicle, refit at most every 2 s
-      if (initial || now - camState.refit > 2000) {
-        camState.refit = now;
-        frame([rider?.at, vehicle && [vehicle.lon, vehicle.lat], o.kind === 'bus' ? stopLL(o.board) : null], { maxZoom: 16.5, top: 200, duration: initial ? 1100 : 1800 });
-      }
+    if (s.camera === 'ride') {   // Where's my ride: you + your vehicle + your stop, kept in view
+      keepBoth(now, [rider?.at, busLL, yourStop], { maxZoom: 16.5, initial });
       return;
     }
     // live: follow the story phase
     const phase = rider?.phase || 'home';
     const changed = phase !== camState.phase;
     if (changed) camState.phase = phase;
+    if (close && (phase === 'home' || phase === 'walking' || phase === 'stop')) {   // walking to the stop, waiting there
+      keepBoth(now, [rider.at, busLL, phase === 'walking' ? yourStop : null], { maxZoom: phase === 'stop' ? 17.5 : 17, initial: initial || changed });
+      return;
+    }
     const ease = changed ? (motionReduced() ? 0 : 1200) : 0;
     if (changed) camState.until = now + ease;
     if (!changed && now < camState.until) return;      // let the ease finish
@@ -252,7 +291,7 @@ export async function initScenes(stage) {
       else walker.set({ at: rider.at, heading: rider.heading, moving: rider.phase === 'walking' });
     } else walker.hide();
     showDecor(scene.leg ? decorFor(scene, rider) : []);
-    if (initial || t !== lastClock || scene.camera === 'live') camera(now, rider, fleet.yourPosition && scene.yours ? fleet.yourPosition : null, initial);
+    if (initial || t !== lastClock || scene.camera === 'live') camera(now, rider, fleet.yourPosition && scene.yours ? fleet.yourPosition : null, initial, t);
     lastClock = t;
   }
 

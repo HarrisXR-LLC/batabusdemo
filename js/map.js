@@ -161,19 +161,19 @@ class Stage {
     await this.backend.idle();
   }
 
-  /** Padding that keeps framed things clear of the top bar, the status pill, the sheet and a tip. */
-  padding(extraBottom = 120) {
+  /** Padding that keeps framed things clear of the top bar, the status pill, the sheet and a tip; at least `band` px stay free. */
+  padding(extraBottom = 120, band = 80) {
     const { h } = this.size();
     const top = this.kTop ?? 150;
-    return { top, bottom: Math.min(h - top - 80, this.sheetSpace + extraBottom), left: 60, right: 60 };
+    return { top, bottom: Math.min(h - top - band, this.sheetSpace + extraBottom), left: 60, right: 60 };
   }
 
-  fit(points, { pitch = 0, bearing = 0, maxZoom = 16.5, duration = 1100, top = 150, bottom = 120 } = {}) {
+  fit(points, { pitch = 0, bearing = 0, maxZoom = 16.5, duration = 1100, top = 150, bottom = 120, band = 80 } = {}) {
     if (!this.backend || !points.length) return;
     this.kTop = top;
     const d = reducedMotion.matches ? 0 : duration;
     this.easingUntil = performance.now() + d;
-    this.backend.fit(points, { padding: this.padding(bottom), pitch, bearing, maxZoom, duration: d });
+    this.backend.fit(points, { padding: this.padding(bottom, band), pitch, bearing, maxZoom, duration: d });
   }
 
   follow(center, { zoom, pitch = 0, bearing = 0, duration = 0, top = 150, bottom = 60 } = {}) {

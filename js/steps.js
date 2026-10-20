@@ -6,9 +6,11 @@
 //   primary: main button label (default "Next"); null when the main action is a demo skip
 //   demo:    a demo control ("DEMO · …"), dashed, never mistaken for a real feature;
 //            it skips to the next step, or with jumpTo ('HH:MM:SS') only moves the clock
-//   run:     story minutes per real second while on the step (live parts)
+//   run:     story minutes per real second while on the step (live parts). LIVE is real time: on the screens
+//            where your bus is close but you aren't moving yet (Booked, Where's my ride), the bus keeps coming (V0.1.4).
 
-const S = (id, title, at, extra = {}) => ({ id, title, at, trip: id === 'welcome' ? 1 : id === 'end' ? 3 : Number(id[1]), ...extra });
+const LIVE = 1 / 60;
+const S =(id, title, at, extra = {}) => ({ id, title, at, trip: id === 'welcome' ? 1 : id === 'end' ? 3 : Number(id[1]), ...extra });
 
 export const STEPS = [
   S('welcome', 'Welcome', ['trip1', '07:40'], { primary: 'Start' }),
@@ -20,8 +22,8 @@ export const STEPS = [
   S('t1.review', 'Review', ['trip1', '07:41']),
   S('t1.signin', 'Sign in', ['trip1', '07:41']),
   S('t1.pay', 'Pay', ['trip1', '07:41']),
-  S('t1.booked', 'Booked', ['trip1', '07:42']),
-  S('t1.ride', "Where's my ride", ['trip1', '07:42']),
+  S('t1.booked', 'Booked', ['trip1', '07:42'], { run: LIVE }),
+  S('t1.ride', "Where's my ride", ['trip1', '07:42'], { run: LIVE }),
   S('t1.walk', 'Walking', ['trip1', '07:46'], { run: 0.2 }),
   S('t1.stop', 'At the stop', ['trip1', '07:50'], { primary: 'Board', demo: 'Jump to 30 s', jumpTo: '07:51:30', run: 0.2 }),
   S('t1.board', 'Boarding pass', ['trip1', '07:52'], { primary: "I'm on board" }),
@@ -36,13 +38,13 @@ export const STEPS = [
   S('t2.review', 'Review', ['trip2', '09:31']),
   S('t2.booked', 'Booked', ['trip2', '09:32']),
   S('t2.skip', 'Booked', ['trip2', '09:32'], { primary: null, demo: 'Skip to 11:06 AM' }),
-  S('t2.ride', "Where's my ride", ['trip2', '11:06']),
+  S('t2.ride', "Where's my ride", ['trip2', '11:06'], { run: LIVE }),
   S('t2.walk', 'Walking', ['trip2', '11:07'], { run: 0.2 }),
   S('t2.stop', 'At the stop', ['trip2', '11:11'], { primary: 'Board', demo: 'Jump to 30 s', jumpTo: '11:12:30', run: 0.2 }),
   S('t2.board', 'Boarding pass', ['trip2', '11:13'], { primary: "I'm on board" }),
   S('t2.onboard', 'On board', ['trip2', '11:13'], { run: 0.8 }),   // 18 story minutes in about 22 s
   S('t2.arrived', 'At the fair', ['trip2', '11:34'], { primary: null, demo: 'Skip to 6:44 PM' }),
-  S('t2.rideBack', "Where's my ride", ['trip2', '18:44']),
+  S('t2.rideBack', "Where's my ride", ['trip2', '18:44'], { run: LIVE }),
   S('t2.walkBack', 'Walking', ['trip2', '18:45'], { run: 0.35 }),  // 7 min to Hall St in about 20 s
   S('t2.stopBack', 'At the stop', ['trip2', '18:52'], { primary: 'Board' }),   // the bus has waited there since 6:49
   S('t2.boardBack', 'Boarding pass', ['trip2', '18:52'], { primary: "I'm on board" }),

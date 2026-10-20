@@ -3,7 +3,7 @@
 // (Where's my ride → walk → at the stop → the pass → on board).
 import { registerStep } from '../router.js';
 import { state, on } from '../state.js';
-import { formatTime } from '../story.js';
+import { formatTime, clock } from '../story.js';
 import { stopLabel } from '../data.js';
 import * as ui from '../ui.js';
 import * as ride from '../ride.js';
@@ -126,7 +126,10 @@ export function rideSteps(cfg) {
         acts.innerHTML = here ? ui.button({ label: 'Board', attrs: 'data-primary' }) : ui.button({ label: 'Jump to 30 s', kind: 'demo', attrs: 'data-demo' });
       };
       show(false);
-      return ride.liveRide(ctx.body, o, { where: where(o), onChange: s => { if (s.state === 'here') show(true); } });
+      // The last 30 seconds play in real time, so you watch your vehicle pull in (V0.1.4); the map keeps you both in view.
+      const offSlow = onClockAt(o.here - 0.5, () => { if (state.story.clock < o.here) clock.run(1 / 60, o.here); });
+      const offLive = ride.liveRide(ctx.body, o, { where: where(o), onChange: s => { if (s.state === 'here') show(true); } });
+      return () => { offSlow(); offLive(); };
     },
   });
 
