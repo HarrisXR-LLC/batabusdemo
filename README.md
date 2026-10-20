@@ -93,4 +93,4 @@ The full list, with license texts, is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NO
 
 ## Version
 
-**V0.1.4** · 2026-10-19
+**V0.1.5** · 2026-10-19

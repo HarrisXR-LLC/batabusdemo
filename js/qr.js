@@ -28,20 +28,17 @@ export function pageUrl() {
 }
 
 /**
- * Framed mode (desktop): a QR card beside the phone when the window has room, and a "Download QR (SVG)"
- * link in the caption for the landing page (2·4 §9). Phone mode never loads the library.
+ * Framed mode (desktop): a QR card beside the phone when the window has room (2·4 §9; the caption's
+ * "Download QR (SVG)" link was removed in V0.1.5). Phone mode never loads the library.
  */
 export async function initFrameQR() {
-  const card = document.getElementById('qr-card'), link = document.getElementById('qr-download');
-  if (!card || !link || document.body.dataset.mode !== 'framed') return;
+  const card = document.getElementById('qr-card');
+  if (!card || document.body.dataset.mode !== 'framed') return;
   try {
     const url = pageUrl();
     card.querySelector('.qr').innerHTML = await qrSvg(url);
-    const file = await qrSvg(url, { cellSize: 10, margin: 40, scalable: false, title: `bata go demo: ${url}` });
-    link.href = URL.createObjectURL(new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n${file}\n`], { type: 'image/svg+xml' }));
     card.querySelector('.qr').setAttribute('aria-label', `QR code that opens ${url}`);
     card.hidden = false;
-    link.hidden = false;
   } catch (err) {
     console.warn('Caption QR unavailable:', err.message);
   }

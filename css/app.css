@@ -42,8 +42,6 @@ body[data-mode="framed"] #screen { width: var(--screen-w); height: var(--screen-
   position: fixed; left: 0; right: 0; bottom: 10px; margin: 0; text-align: center; font-size: var(--fs-footnote); color: var(--g600);
 }
 #frame-caption strong { color: var(--g900); font-weight: 600; }
-#qr-download { margin-left: 14px; color: #036A92; font-weight: 600; text-underline-offset: 2px; }   /* 5.3:1 on the page's gray */
-#qr-download:not([hidden])::before { content: "·"; margin-right: 14px; color: var(--g600); display: inline-block; text-decoration: none; }
 /* beside the phone when the window has room (frame.js sets data-side) */
 #qr-card {
   position: fixed; top: 50%; left: calc(50% + (var(--screen-w) / 2 + 12px) * var(--k, 1) + 56px); transform: translateY(-50%);
